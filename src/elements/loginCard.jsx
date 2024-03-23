@@ -82,7 +82,7 @@ const LoginCard = () => {
   });
 
   return (
-    <div className="w-[30%] min-w-[400px] relative bg-transparent backdrop-blur-lg md:flex-0 shrink-0">
+    <div className="w-[30%] min-w-[300px] relative bg-transparent backdrop-blur-lg md:flex-0 shrink-0">
       <div
         className="absolute top-0 right-5 text-white p-2 z-10  transition duration-150 hover:scale-150 hover:cursor-pointer"
         onClick={(e) => {

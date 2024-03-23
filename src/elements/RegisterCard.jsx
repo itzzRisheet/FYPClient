@@ -20,7 +20,7 @@ const RegisterCard = () => {
   });
 
   return (
-    <div className="w-[40%] min-w-[400px] rounded-2xl bg-transparent backdrop-blur-lg px-3 mx-auto mt-0 md:flex-0 shrink-0">
+    <div className="w-[40%] min-w-[300px] rounded-2xl bg-transparent backdrop-blur-lg px-3 mx-auto mt-0 md:flex-0 shrink-0">
       <div className="relative text-white z-0 flex flex-col min-w-0 break-words  border-0 shadow-soft-xl rounded-2xl bg-clip-border">
         <div className="p-3 text-center  border-b-0 rounded-t-2xl">
           <h5>Register with</h5>
