@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { Switch } from "@mui/material";
 import React, { useState } from "react";
-import { localStore } from "../store/store";
+import { uselocalStore } from "../store/store";
 
 const RoleSwitch = () => {
-  const { setRole, role } = localStore();
+  const { setRole, role } = uselocalStore();
   const [checked, setChecked] = useState(true);
 
   const handleRoleChange = (e) => {

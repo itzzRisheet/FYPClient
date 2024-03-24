@@ -8,7 +8,7 @@ import { Avatar, List, fabClasses } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SidebarList from "../elements/sidebarList";
 import { useParams } from "react-router-dom";
-import { getTopicDetails } from "../helperRequests/helper";
+import { getTopicDetails } from "../helper/helper";
 
 const TopicPage = () => {
   const { topicID } = useParams();
@@ -23,12 +23,12 @@ const TopicPage = () => {
   }, []);
 
   const printTokenList = () => {
-    return (<p>hello</p>)
-  }
+    return <p>hello</p>;
+  };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-HomeBG-main ">
-      <div className="flex justify-between items-center p-4 border-solid border h-[10vh] ">
+    <div className="h-screen w-screen flex py-[10vh] flex-col bg-HomeBG-main ">
+      <div className="flex flex-col md:flex-row justify-between items-center p-4 border-solid border h-[10vh] ">
         <div className="flex items-center gap-4">
           <FontAwesomeIcon icon={faBars} size="xl" color="white" />
           <FontAwesomeIcon icon={faSchool} size="xl" color="white" />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import FBicon from "../svgs/fbIcon.jsx";
 import AppleIcon from "../svgs/appleIcon.jsx";
 import GoogleIcon from "../svgs/GoogleIcon.jsx";
@@ -6,15 +6,26 @@ import Check from "../svgs/check.jsx";
 import { Formik, useFormik } from "formik";
 import { Alert, Button, IconButton, Snackbar } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faCancel } from "@fortawesome/free-solid-svg-icons";
-import { localStore } from "../store/store.js";
+import {
+  faArrowLeft,
+  faCancel,
+  faCross,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { uselocalStore, useUserData } from "../store/store.js";
 import RoleSwitch from "./roleSwitch.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import * as Yup from "yup";
+import { validateEmail } from "../helper/Validate.js";
 
-const LoginCard = () => {
-  const [open, setOpen] = React.useState(false);
-  const { setRole, role } = localStore();
+const LoginCard = ({ id, ref }) => {
+  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState("");
+  const { setRole, role } = uselocalStore();
+  const { token, setToken, decodedData, userRole } = useUserData();
 
   const handleClick = () => {
     setOpen(true);
@@ -31,7 +42,7 @@ const LoginCard = () => {
   const action = (
     <React.Fragment>
       <Button color="secondary" size="small" onClick={handleClose}>
-        UNDO
+        close
       </Button>
       <IconButton
         size="small"
@@ -44,7 +55,8 @@ const LoginCard = () => {
     </React.Fragment>
   );
 
-  const { setShowLoginPage, setLoginStatus } = localStore();
+  const { toggleShowLoginPage, setLoginStatus, setAccountCard } =
+    uselocalStore();
 
   const navigate = useNavigate();
 
@@ -53,6 +65,10 @@ const LoginCard = () => {
     formik.setValues({ ...formik.values, role: !role });
   }, [role]);
 
+  const closeAnimation = () => {
+    gsap.to(".logincard", { scale: 0, duration: 0.3 });
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -60,37 +76,62 @@ const LoginCard = () => {
       role: role,
     },
     validate: (values) => {
-      if (!values.email || !values.password) {
+      const errors = {};
+
+      // Check if email is missing or not valid
+      if (!values.email) {
+        errors.email = "Email is required";
+      } else if (!validateEmail(values.email)) {
+        errors.email = "Invalid email format";
+      }
+
+      // Check if password is missing or less than 8 characters
+      if (!values.password) {
+        errors.password = "Password is required";
+      } else if (values.password.length < 8) {
+        errors.password = "Password must be at least 8 characters long";
+      }
+      setMsg(errors.email || errors.password);
+      if (errors.email || errors.password) {
         handleClick();
       }
+      return errors;
     },
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      console.log(values);
       await axios
         .post("http://localhost:8080/api/login", values)
-        .then((res) => {
-          localStorage.setItem("token", res.data.role);
+        .then(async (res) => {
+          const { token } = res.data;
+          setToken(token);
+          const { role } = decodedData(token);
           setLoginStatus();
-          navigate("/student");
+          navigate(`/${role ? "student" : "teacher"}`);
         })
         .catch((err) => {
-          console.log(err);
+          setMsg(err.response.data.msg);
+          handleClick();
         });
     },
   });
 
   return (
-    <div className="w-[30%] min-w-[300px] relative bg-transparent backdrop-blur-lg md:flex-0 shrink-0">
+    <div
+      id={id}
+      ref={ref}
+      className="logincard w-[30%] min-w-[300px] z-[2] relative bg-transparent backdrop-blur-lg md:flex-0 shrink-0"
+    >
       <div
         className="absolute top-0 right-5 text-white p-2 z-10  transition duration-150 hover:scale-150 hover:cursor-pointer"
         onClick={(e) => {
-          e.preventDefault();
-          setShowLoginPage();
+          closeAnimation();
+          setTimeout(() => {
+            setAccountCard(false);
+          }, 300);
         }}
       >
-        <FontAwesomeIcon icon={faArrowLeft} className="h-5 w-5" />
+        <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
       </div>
       <div className="relative text-white z-0 flex flex-col min-w-0 break-words  border-0 shadow-soft-xl rounded-2xl bg-clip-border">
         <div className="p-3 text-center  border-b-0 rounded-t-2xl">
@@ -160,20 +201,26 @@ const LoginCard = () => {
                 Sign in
               </button>
             </div>
+            <div>
+              register your account{" "}
+              <span
+                onClick={() => {
+                  toggleShowLoginPage();
+                }}
+                className="text-blue-400 hover:text-blue-700 cursor-pointer transition-all duration-150"
+              >
+                Signup
+              </span>
+            </div>
           </form>
         </div>
       </div>
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={700}
         onClose={handleClose}
-        message="Note archived"
+        message={msg}
         action={action}
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-        }}
       />
     </div>
   );

@@ -1,14 +1,59 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FBicon from "../svgs/fbIcon.jsx";
 import AppleIcon from "../svgs/appleIcon.jsx";
 import GoogleIcon from "../svgs/GoogleIcon.jsx";
 import Check from "../svgs/check.jsx";
 import { useFormik } from "formik";
 import RoleSwitch from "./roleSwitch.jsx";
-import { localStore } from "../store/store.js";
+import { uselocalStore, useUserData } from "../store/store.js";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Button, IconButton, Snackbar } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCancel } from "@fortawesome/free-solid-svg-icons";
+import { validateEmail } from "../helper/Validate.js";
+import { jwtDecode } from "jwt-decode";
 
-const RegisterCard = () => {
-  const { setShowLoginPage } = localStore();
+const RegisterCard = ({ id, ref }) => {
+  const { setShowLoginPage, role, setLoginStatus } = uselocalStore();
+  const { token, setToken, userID, setDecodedData, userRole } = useUserData();
+  const [msg, setMsg] = useState();
+
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        close
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <FontAwesomeIcon icon={faCancel} />
+      </IconButton>
+    </React.Fragment>
+  );
+
+  useEffect(() => {
+    formik.setValues({ ...formik.values, role: !role });
+  }, [role]);
+
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -16,16 +61,69 @@ const RegisterCard = () => {
       lname: "",
       email: "",
       role: "",
+      password: "",
+    },
+    validate: (values) => {
+      const errors = {};
+
+      if (!values.fname) {
+        errors.fname = "Firstname is required";
+      }
+      if (!values.lname) {
+        errors.fname = "Lastname is required";
+      }
+
+      // Check if email is missing or not valid
+      if (!values.email) {
+        errors.email = "Email is required";
+      } else if (!validateEmail(values.email)) {
+        errors.email = "Invalid email format";
+      }
+
+      // Check if password is missing or less than 8 characters
+      if (!values.password) {
+        errors.password = "Password is required";
+      } else if (values.password.length < 8) {
+        errors.password = "Password must be at least 8 characters long";
+      }
+      setMsg(errors.fname || errors.lname || errors.email || errors.password);
+      if (errors.email || errors.password) {
+        handleClick();
+      }
+      return errors;
+    },
+    validateOnBlur: false,
+    validateOnChange: false,
+    onSubmit: async (values) => {
+      await axios
+        .post("http://localhost:8080/api/signup", values)
+        .then(async (res) => {
+          if (res.status === 200) {
+            const { token } = res.data;
+            setToken(token);
+            await setDecodedData();
+            setLoginStatus();
+            navigate(`/${userRole ? "student" : "teacher"}`);
+          }
+        })
+        .catch((err) => {
+          setMsg(err.response.data.msg);
+          handleClick();
+        });
     },
   });
 
   return (
-    <div className="w-[40%] min-w-[300px] rounded-2xl bg-transparent backdrop-blur-lg px-3 mx-auto mt-0 md:flex-0 shrink-0">
-      <div className="relative text-white z-0 flex flex-col min-w-0 break-words  border-0 shadow-soft-xl rounded-2xl bg-clip-border">
-        <div className="p-3 text-center  border-b-0 rounded-t-2xl">
+    <div
+      id={id}
+      ref={ref}
+      className="w-[95vw] md:w-[80%] lg:w-[40%] min-w-[300px] z-[2]  rounded-2xl bg-transparent backdrop-blur-lg px-3 mx-auto mt-0 md:flex-0 shrink-0"
+    >
+      <div className="relative text-white z-0 flex flex-col py-4 gap-2 min-w-0 break-words  border-0 shadow-soft-xl rounded-2xl bg-clip-border">
+        <div className="text-center  border-b-0 rounded-t-2xl">
           <h5>Register with</h5>
         </div>
-        <div className="flex flex-wrap gap-2 justify-center sm:px-6 xl:px-12">
+        <div className="flex flex-wrap gap-2 justify-center ">
           <div className="flex-0">
             <a className="inline-block w-full p-2 font-bold text-center text-gray-200 uppercase align-middle transition-all bg-transparent  rounded-lg shadow-none cursor-pointer hover:scale-102 leading-pro text-xs ease-soft-in tracking-tight-soft bg-150 bg-x-25 hover:bg-transparent hover:opacity-75">
               <FBicon className={"transition duration-150 hover:scale-150"} />
@@ -53,13 +151,17 @@ const RegisterCard = () => {
             <hr className=" text-slate-500 w-[30%] opacity-20" />
           </div>
         </div>
-        <div className="flex-auto p-6">
-          <form className="flex flex-col items-center gap-2">
+        <div className="flex-auto">
+          <form
+            className="flex flex-col items-center gap-2"
+            onSubmit={formik.handleSubmit}
+          >
             <div className="flex flex-col  items-center gap-2  w-full  mb-4">
               <RoleSwitch />
-              <div className="flex justify-between w-[80%] gap-2">
+              <div className="flex flex-wrap justify-between w-[80%] gap-2">
                 <div className="relative ">
                   <input
+                    {...formik.getFieldProps("fname")}
                     type="text"
                     className="input"
                     placeholder="Firstname"
@@ -67,13 +169,19 @@ const RegisterCard = () => {
                   <span className="input_border"></span>
                 </div>
                 <div className="relative">
-                  <input type="text" className="input" placeholder="Lastname" />
+                  <input
+                    {...formik.getFieldProps("lname")}
+                    type="text"
+                    className="input"
+                    placeholder="Lastname"
+                  />
                   <span className="input_border"></span>
                 </div>
               </div>
 
               <div className="relative w-[80%]">
                 <input
+                  {...formik.getFieldProps("email")}
                   type="text"
                   className="input"
                   placeholder="Enter email"
@@ -82,6 +190,7 @@ const RegisterCard = () => {
               </div>
               <div className="relative w-[80%]">
                 <input
+                  {...formik.getFieldProps("password")}
                   type="password"
                   className="input"
                   placeholder="Password"
@@ -96,7 +205,7 @@ const RegisterCard = () => {
             <div className="text-center">
               <button
                 className="inline-block bg-[#8C6A5D] px-6 py-3 mt-6 mb-2 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:scale-110 hover:shadow-soft-xs leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 bg-gradient-to-tl from-gray-900 to-slate-800 hover:border-slate-700 hover:bg-slate-700 hover:text-white"
-                type="button"
+                type="submit"
               >
                 Sign up
               </button>
@@ -107,7 +216,7 @@ const RegisterCard = () => {
                 className="font-bold text-blue-500 hover:cursor-pointer hover:text-blue-300"
                 onClick={(e) => {
                   e.preventDefault();
-                  setShowLoginPage();
+                  setShowLoginPage(true);
                 }}
               >
                 Sign in
@@ -116,6 +225,13 @@ const RegisterCard = () => {
           </form>
         </div>
       </div>
+      <Snackbar
+        open={open}
+        autoHideDuration={700}
+        onClose={handleClose}
+        message={msg}
+        action={action}
+      />
     </div>
   );
 };

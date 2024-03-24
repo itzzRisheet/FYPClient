@@ -18,14 +18,11 @@
 
 @layer components {
   .heroBG {
-    
-    
     background-image: url("/src/assets/BGhome.jpg");
     background-position: center;
     background-size: cover;
     filter: brightness(30%);
   }
-
 
   .list {
     @apply flex items-center h-[80%]  border-b-2  border-transparent transition-border duration-200 ease-in-out hover:border-white cursor-pointer;
@@ -51,5 +48,9 @@
       scale: 2%;
       cursor: pointer;
     }
+  }
+
+  .bc {
+    @apply border-2 border-white;
   }
 }

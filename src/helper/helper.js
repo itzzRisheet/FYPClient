@@ -1,18 +1,16 @@
 import axios from "axios";
+import { useUserData } from "../store/store";
 
-const data = {
-  studentID: "65e986a7cb4591866d2b79f7",
-  teacherID: "65ea9de8abb7191f4b2119ab",
-  TUserID: "65ea9de8abb7191f4b2119ac",
-  SUserID: "65e986a7cb4591866d2b79f8",
-};
+
 
 const baseURL = "http://localhost:8080";
 
-export async function getClasses() {
+export async function getClasses(role , roleID) {
   try {
+    console.log("role : " + role)
+    console.log("roleID : " + roleID)
     const res = await axios.get(
-      baseURL + `/api/students/${data.studentID}/getclassNames`
+      baseURL + `/api/${role ? "students" : "teachers"}/${roleID}/getclassNames`
     );
     return res.data;
   } catch (err) {
