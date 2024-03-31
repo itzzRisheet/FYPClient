@@ -17,12 +17,13 @@ import {
   faComputer,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useUserData, uselocalStore } from "../store/store";
+import { useClassData, useUserData, uselocalStore } from "../store/store";
+import Loading from "./Loading.jsx";
 
 const SidebarList = () => {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(false);
   const { decodedData, token } = useUserData();
-  const { showSidebar } = uselocalStore();
+  const { showSidebar, setShowSidebar } = uselocalStore();
 
   const handleClick = () => {
     setOpen(!open);
@@ -33,56 +34,66 @@ const SidebarList = () => {
     navigate(`/${role ? "students" : "teachers"}/classes/${classID}`);
   };
 
-  const [classlist, setClassList] = useState([]);
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await getClasses(role, roleID);
-      setClassList(data);
-    };
-    getData();
-  }, []);
+  const { classlist, setClassList } = useClassData();
 
-  return (
-    <div
-      className={`side border border-solid h-[90vh] transition-all duration-150 ${showSidebar ? "w-[25%]" : "w-0 overflow-hidden"}`}
-    >
-      <List
-        sx={{ width: "100%", bgcolor: "transparent" }}
-        component="nav"
-        aria-labelledby="nested-list-subheader"
+  useEffect(() => {
+    setClassList(role, roleID);
+  }, [setClassList]);
+
+  if (classlist)
+    return (
+      <div
+        className={`side bg-HomeBG-side rounded-2xl  h-[90vh] transition-all duration-150 overflow-auto ${showSidebar ? "absolute md:static  z-20 w-[60vw] md:w-[25vw]" : "w-0 md:w-[3rem] overflow-hidden"}`}
+        onMouseEnter={() => {
+          setShowSidebar(true);
+        }}
+        onMouseLeave={() => {
+          setShowSidebar(false);
+          setOpen(false);
+        }}
       >
-        <ListItemButton onClick={handleClick}>
-          <ListItemIcon>
-            <FontAwesomeIcon icon={faComputer} className="text-slate-400" />
-          </ListItemIcon>
-          <ListItemText primary="Enrolls" className="text-slate-400" />
-          {open ? (
-            <FontAwesomeIcon icon={faAngleUp} className="text-slate-400" />
-          ) : (
-            <FontAwesomeIcon icon={faAngleDown} className="text-slate-400" />
-          )}
-        </ListItemButton>
-        <Collapse in={open} timeout={"auto"} unmountOnExit>
-          <List component="div" disablePadding className="text-slate-400">
-            {classlist.map((cls) => {
-              return (
-                <ListItemButton
-                  sx={{ pl: 2 }}
-                  key={cls.classID}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleClassClick(cls.classID);
-                  }}
-                >
-                  <ListItemText primary={cls.title} />
-                </ListItemButton>
-              );
-            })}
-          </List>
-        </Collapse>
-      </List>
-    </div>
-  );
+        <List
+          sx={{ bgcolor: "transparent" }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+        >
+          <ListItemButton onClick={handleClick}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faComputer} className="text-[#222831]" />
+            </ListItemIcon>
+            <ListItemText
+              primary={role ? "Enrolls" : "Classes associated"}
+              className="text-[#222831]"
+            />
+
+            {open ? (
+              <FontAwesomeIcon icon={faAngleUp} className="text-[#222831]" />
+            ) : (
+              <FontAwesomeIcon icon={faAngleDown} className="text-[#222831]" />
+            )}
+          </ListItemButton>
+          <Collapse in={open} timeout={"auto"} unmountOnExit>
+            <List component="div" disablePadding className="text-[#222831]">
+              {classlist.map((cls) => {
+                return (
+                  <ListItemButton
+                    sx={{ pl: 2 }}
+                    key={cls.classID}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleClassClick(cls.classID);
+                    }}
+                  >
+                    <ListItemText primary={cls.title} />
+                  </ListItemButton>
+                );
+              })}
+            </List>
+          </Collapse>
+        </List>
+      </div>
+    );
+  return <Loading />;
 };
 
 export default SidebarList;

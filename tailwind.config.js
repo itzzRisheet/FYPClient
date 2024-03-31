@@ -11,9 +11,12 @@ export default {
         },
         transparent: "transparent",
         HomeBG: {
-          main: "#2D3250",
-          side: "#424769",
-          content: "#7077A1",
+          main: "#020202",
+          side: "#506c77",
+          content: "#070808",
+        },
+        btn: {
+          create: "#bb3928",
         },
       },
       transitionProperty: {

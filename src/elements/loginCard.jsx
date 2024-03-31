@@ -24,8 +24,10 @@ import { validateEmail } from "../helper/Validate.js";
 const LoginCard = ({ id, ref }) => {
   const [open, setOpen] = useState(false);
   const [msg, setMsg] = useState("");
-  const { setRole, role } = uselocalStore();
   const { token, setToken, decodedData, userRole } = useUserData();
+  const { setRole, userLoggingIn, setUserLogginIn } = uselocalStore();
+
+  const BASEURL = "http://localhost:8080";
 
   const handleClick = () => {
     setOpen(true);
@@ -60,11 +62,6 @@ const LoginCard = ({ id, ref }) => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(!role);
-    formik.setValues({ ...formik.values, role: !role });
-  }, [role]);
-
   const closeAnimation = () => {
     gsap.to(".logincard", { scale: 0, duration: 0.3 });
   };
@@ -73,7 +70,6 @@ const LoginCard = ({ id, ref }) => {
     initialValues: {
       email: "",
       password: "",
-      role: role,
     },
     validate: (values) => {
       const errors = {};
@@ -101,12 +97,14 @@ const LoginCard = ({ id, ref }) => {
     validateOnBlur: false,
     onSubmit: async (values) => {
       await axios
-        .post("http://localhost:8080/api/login", values)
+        .post(`${BASEURL}/api/login`, values)
         .then(async (res) => {
           const { token } = res.data;
           setToken(token);
           const { role } = decodedData(token);
+          setRole(role);
           setLoginStatus();
+          setUserLogginIn(true);
           navigate(`/${role ? "student" : "teacher"}`);
         })
         .catch((err) => {
@@ -172,7 +170,6 @@ const LoginCard = ({ id, ref }) => {
             className="flex flex-col items-center gap-2"
           >
             <div className="flex flex-col  gap-2 items-center w-full mb-4">
-              <RoleSwitch />
               <div className="relative">
                 <input
                   {...formik.getFieldProps("email")}

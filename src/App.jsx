@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import StudentHome from "./components/studentHome";
 import ClassPage from "./components/classPage";
 import TopicPage from "./components/TopicPage";
+import TeacherHome from "./components/teachersHome";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,15 @@ const router = createBrowserRouter([
         element: <StudentHome />,
       },
       {
+        path: "/teacher",
+        element: <TeacherHome />,
+      },
+      {
         path: "/students/classes/:classID",
+        element: <ClassPage />,
+      },
+      {
+        path: "/teachers/classes/:classID",
         element: <ClassPage />,
       },
       {

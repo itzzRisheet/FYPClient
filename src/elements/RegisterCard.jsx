@@ -16,8 +16,9 @@ import { jwtDecode } from "jwt-decode";
 
 const RegisterCard = ({ id, ref }) => {
   const { setShowLoginPage, role, setLoginStatus } = uselocalStore();
-  const { token, setToken, userID, setDecodedData, userRole } = useUserData();
+  const { token, setToken, decodedData, userRole } = useUserData();
   const [msg, setMsg] = useState();
+  const BASEURL = "http://localhost:8080";
 
   const [open, setOpen] = useState(false);
 
@@ -50,7 +51,7 @@ const RegisterCard = ({ id, ref }) => {
   );
 
   useEffect(() => {
-    formik.setValues({ ...formik.values, role: !role });
+    formik.setValues({ ...formik.values, role: role });
   }, [role]);
 
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const RegisterCard = ({ id, ref }) => {
       fname: "",
       lname: "",
       email: "",
-      role: "",
+      role: role,
       password: "",
     },
     validate: (values) => {
@@ -95,15 +96,16 @@ const RegisterCard = ({ id, ref }) => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
+      console.log(values);
       await axios
-        .post("http://localhost:8080/api/signup", values)
+        .post(`${BASEURL}/api/signup`, values)
         .then(async (res) => {
           if (res.status === 200) {
             const { token } = res.data;
             setToken(token);
-            await setDecodedData();
+            const { role } = decodedData(token);
             setLoginStatus();
-            navigate(`/${userRole ? "student" : "teacher"}`);
+            navigate(`/${role ? "student" : "teacher"}`);
           }
         })
         .catch((err) => {

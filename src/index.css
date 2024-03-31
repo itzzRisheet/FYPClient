@@ -27,11 +27,16 @@
   .list {
     @apply flex items-center h-[80%]  border-b-2  border-transparent transition-border duration-200 ease-in-out hover:border-white cursor-pointer;
   }
-}
-
-@layer components {
   .input {
-    @apply w-[100%] text-white text-lg bg-transparent border-b-[1px] border-b-borderBottom-before hover:border-b-[2px] focus:outline-none;
+    @apply w-[100%] text-white text-lg bg-transparent  border-b-[1px] border-b-borderBottom-before hover:border-b-[2px] focus:outline-none;
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    transition: background-color 9999s ease-in-out 0s;
+    /* background-color: transparent !important; */
+    -webkit-text-fill-color: #fff !important;
   }
   .input_border {
     @apply w-0 absolute bg-white h-[2px] bottom-0 left-0 transition-all duration-200;
@@ -51,6 +56,17 @@
   }
 
   .bc {
-    @apply border-2 border-white;
+    @apply transition-all duration-300 border-2 border-white;
+  }
+  .bb-t {
+    @apply cursor-pointer border-b-2 border-transparent hover:border-white;
+  }
+
+  .height-transition {
+    transition: height 0.3s;
+  }
+
+  .resHeadText {
+    @apply text-sm md:text-lg lg:text-xl;
   }
 }

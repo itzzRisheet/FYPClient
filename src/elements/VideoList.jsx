@@ -1,5 +1,3 @@
-
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
@@ -41,16 +39,19 @@ const VideosList = () => {
   };
   const [vList, setVlist] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [inputQuery, setInputQuery] = useState("");
   useEffect(() => {
     const getData = async () => {
       const options = {
         method: "GET",
-        url: "https://youtube-v2.p.rapidapi.com/trending/",
+        url: "https://youtube-v2.p.rapidapi.com/search/",
         params: {
+          query:
+            inputQuery ||
+            "DSA react.js Next.js  AI and ML llama ",
           lang: "en",
+          order_by: "this_month",
           country: "us",
-          section: "Now",
         },
         headers: {
           "X-RapidAPI-Key":
@@ -69,7 +70,7 @@ const VideosList = () => {
       }
     };
     getData();
-  }, []);
+  }, [inputQuery]);
 
   const printVideoList = () => {
     return vList.map((v, i) => {
@@ -92,8 +93,22 @@ const VideosList = () => {
   };
 
   return (
-    <div className={isLoading ? "center" : "videolist"}>
-      {isLoading ? <Loading /> : printVideoList()}
+    <div>
+      <div className="w-[100%] flex justify-center my-5">
+        {" "}
+        <input
+          type="text"
+          className="input w-[30%] "
+          value={inputQuery}
+          placeholder="Search..."
+          onChange={(e) => {
+            setInputQuery(e.target.value);
+          }}
+        />
+      </div>
+      <div className={isLoading ? "center" : "videolist"}>
+        {isLoading ? <Loading /> : printVideoList()}
+      </div>
     </div>
   );
 };

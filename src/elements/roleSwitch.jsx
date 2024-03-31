@@ -1,16 +1,19 @@
 import styled from "@emotion/styled";
 import { Switch } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { uselocalStore } from "../store/store";
 
 const RoleSwitch = () => {
   const { setRole, role } = uselocalStore();
   const [checked, setChecked] = useState(true);
 
-  const handleRoleChange = (e) => {
-    setRole(checked);
-    setChecked(!checked);
+  const handleRoleChange = (val) => {
+    setRole(val);
   };
+
+  useEffect(() => {
+    console.log("role from role switch : ",role);
+  }, [role]);
 
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -60,8 +63,10 @@ const RoleSwitch = () => {
       <span>Teacher</span>
       <Switch
         sx={{ m: 1 }}
-        checked={checked}
-        onChange={handleRoleChange}
+        checked={role}
+        onChange={(e) => {
+          handleRoleChange(e.target.checked);
+        }}
         role="switch"
       />
       <span>Student</span>

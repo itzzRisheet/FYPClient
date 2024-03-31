@@ -7,7 +7,7 @@
 
 .videoCard {
   width: 400px;
-  height: 300px;
+  height: 400px;
   /* border: 1px solid black; */
   border-radius: 20px;
 }
@@ -15,8 +15,11 @@
 .thumbnail {
   /* border: 1px solid black; */
   height: 65%;
+  width: 100%;
   border-radius: 20px;
-  position: relative;
+  background-position: center;
+  background-size: 100%;
+  background-repeat: no-repeat;
   overflow: hidden;
 }
 

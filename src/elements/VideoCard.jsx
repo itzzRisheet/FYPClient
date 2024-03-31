@@ -1,4 +1,3 @@
-
 import {
   faBoxOpen,
   faCancel,
@@ -57,26 +56,26 @@ const VideoCard = ({
   };
 
   // console.log(channelName);
+  // <video
+  //           src={`https://www.youtube.com/watch?v=${videoID}`}
+  //           poster={thumbnails[0].url}
+  //           autoPlay={false}
+  //           controls={false}
+  //           muted
+  //           loop
+  //         />
 
   return (
-    <div className="videoCard">
+    <div className="videoCard h-[70vh] md:h-[400px] md:w-[400px] w-[80%]">
       <div
         className="thumbnail"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        style={{
+          backgroundImage: `url(${thumbnails[0].url})`,
+        }}
       >
-        {isHovered ? (
-          <VideoPlayer />
-        ) : (
-          <video
-            src=""
-            poster={thumbnails[0].url}
-            autoPlay={false}
-            controls={false}
-            muted
-            loop
-          />
-        )}
+        {isHovered ? <VideoPlayer /> : ""}
       </div>
       <div className="body box">
         <div className="channelLogo box">
@@ -85,7 +84,7 @@ const VideoCard = ({
             {channelName ? channelName[0] : "R"}
           </Avatar>
         </div>
-        <div className="details box">
+        <div className="details box text-white">
           <div className="title box">{title}</div>
           <div className="channelName box">{channelName}</div>
           <div className="views-publishtime box">

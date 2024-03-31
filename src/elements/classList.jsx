@@ -2,6 +2,7 @@ import {
   faAngleDown,
   faAngleUp,
   faArrowRight,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,12 +27,11 @@ const ClassList = ({ classData }) => {
       setOpenSubject(newOpenSubject); // Update the state with the new object
     };
     updateSubjectList();
-
   }, [classData]);
   const handleClick = (subjectID) => {
     setOpenSubject((prev) => {
       // Ensure that the subjectID exists in the state object
-      const prevTopicOpen = prev[subjectID.toString()] ;
+      const prevTopicOpen = prev[subjectID.toString()];
       return {
         ...prev,
         [subjectID.toString()]: !prevTopicOpen,
@@ -49,9 +49,9 @@ const ClassList = ({ classData }) => {
           aria-labelledby="nested-list-subheader"
           className="text-white"
         >
-          {classData.Subjects.map((sub) => {
+          {classData.Subjects.map((sub, i) => {
             return (
-              <div>
+              <div key={i}>
                 <ListItemButton
                   key={sub._id}
                   onClick={() => {
@@ -71,14 +71,24 @@ const ClassList = ({ classData }) => {
                     />
                   )}
                 </ListItemButton>
-                {sub.topics.map((top) => {
-                  return (
-                    <Collapse
-                      in={openSubject[sub._id.toString()]}
-                      timeout={700}
-                      unmountOnExit
+                <Collapse
+                  in={openSubject[sub._id.toString()]}
+                  timeout={100}
+                  unmountOnExit
+                >
+                  <div className={`w-[100%] flex justify-end `}>
+                    <span
+                      className="bg-HomeBG-side px-2 py-1 text-xs rounded-2xl hover:bg-gray-500 cursor-pointer transition-all duration-150"
+                      onClick={() => {
+                        console.log(sub._id);
+                      }}
                     >
-                      <List component={"div"}>
+                      add Topic <FontAwesomeIcon icon={faPlus} />
+                    </span>
+                  </div>
+                  {sub.topics.map((top, i) => {
+                    return (
+                      <List component={"div"} key={i}>
                         <ListItemButton
                           sx={{ pl: 2 }}
                           key={top._id}
@@ -92,16 +102,20 @@ const ClassList = ({ classData }) => {
                           />
                         </ListItemButton>
                       </List>
-                    </Collapse>
-                  );
-                })}
+                    );
+                  })}
+                </Collapse>
               </div>
             );
           })}
         </List>
       </div>
     );
-  return <div className="text-2xl text-white flex items-center justify-center">No classes found</div>
+  return (
+    <div className="text-2xl text-white flex items-center justify-center">
+      No Subjects found
+    </div>
+  );
 };
 
 export default ClassList;
