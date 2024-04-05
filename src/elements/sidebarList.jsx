@@ -7,7 +7,7 @@ import {
   ListItemText,
   ListSubheader,
 } from "@mui/material";
-import axios from "axios";
+import axios, { all } from "axios";
 import React, { useEffect, useState } from "react";
 import { getClassDetails, getClasses } from "../helper/helper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,7 +43,7 @@ const SidebarList = () => {
   if (classlist)
     return (
       <div
-        className={`side bg-HomeBG-side rounded-2xl  h-[90vh] transition-all duration-150 overflow-auto ${showSidebar ? "absolute md:static  z-20 w-[60vw] md:w-[25vw]" : "w-0 md:w-[3rem] overflow-hidden"}`}
+        className={`side bg-HomeBG-side rounded-2xl  h-[90vh] transition-all duration-300 overflow-auto ${showSidebar ? "absolute md:static  z-20 w-[60vw] md:w-[25vw]" : "w-0 md:w-[3rem] overflow-hidden"}`}
         onMouseEnter={() => {
           setShowSidebar(true);
         }}
@@ -53,7 +53,9 @@ const SidebarList = () => {
         }}
       >
         <List
-          sx={{ bgcolor: "transparent" }}
+          sx={{
+            bgcolor: "transparent",
+          }}
           component="nav"
           aria-labelledby="nested-list-subheader"
         >

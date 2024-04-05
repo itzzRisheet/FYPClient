@@ -14,9 +14,11 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { uselocalStore } from "../store/store";
 
 const ClassList = ({ classData }) => {
   const [openSubject, setOpenSubject] = useState({});
+  const { role} = uselocalStore();
   useEffect(() => {
     const updateSubjectList = () => {
       const newOpenSubject = {}; // Initialize a new object to hold the updated state
@@ -77,14 +79,16 @@ const ClassList = ({ classData }) => {
                   unmountOnExit
                 >
                   <div className={`w-[100%] flex justify-end `}>
-                    <span
-                      className="bg-HomeBG-side px-2 py-1 text-xs rounded-2xl hover:bg-gray-500 cursor-pointer transition-all duration-150"
-                      onClick={() => {
-                        console.log(sub._id);
-                      }}
-                    >
-                      add Topic <FontAwesomeIcon icon={faPlus} />
-                    </span>
+                    {!role && (
+                      <span
+                        className="bg-HomeBG-side px-2 py-1 text-xs rounded-2xl hover:bg-gray-500 cursor-pointer transition-all duration-150"
+                        onClick={() => {
+                          console.log(sub._id);
+                        }}
+                      >
+                        add Topic <FontAwesomeIcon icon={faPlus} />
+                      </span>
+                    )}
                   </div>
                   {sub.topics.map((top, i) => {
                     return (
@@ -112,7 +116,7 @@ const ClassList = ({ classData }) => {
       </div>
     );
   return (
-    <div className="text-2xl text-white flex items-center justify-center">
+    <div className="text-2xl text-white h-full w-full flex items-center justify-center">
       No Subjects found
     </div>
   );

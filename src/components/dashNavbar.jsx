@@ -10,7 +10,6 @@ import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useClassData, useTopicData, uselocalStore } from "../store/store";
 import { useNavigate, useParams } from "react-router-dom";
-import JoinClass from "../elements/JoinClass";
 import MuiDialogBox from "../elements/MuiDialogBox";
 
 const DahsNavbar = () => {

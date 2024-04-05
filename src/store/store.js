@@ -8,7 +8,9 @@ export const uselocalStore = create((set) => ({
   setUserLogginIn: (val) => {
     set({ userLoggingIn: val });
   },
-  role: 1,
+  role: localStorage.getItem("token")
+    ? jwtDecode(localStorage.getItem("token")).role
+    : 0,
   accountCard: false,
   showSidebar: false,
   showLoginPage: false,
@@ -73,17 +75,47 @@ export const useUserData = create((set, get) => ({
 export const useClassData = create((set, get) => ({
   classData: {},
   classlist: [],
+  classCode: {},
   setClassList: async (role, roleID) => {
     const { data } = await getClasses(role, roleID);
+    data.map((cls) => {
+      set((state) => ({
+        classCode: {
+          ...state.classCode,
+          [cls.classID]: { code: "", generate: false, shared: false },
+        },
+      }));
+    });
     set({ classlist: data });
+  },
+  setClassCode: (classID, code) => {
+    set((state) => ({
+      classCode: {
+        ...state.classCode,
+        [classID]: {
+          code: code,
+          generate: true,
+        },
+      },
+    }));
+  },
+  setClassCodeShare: (classId) => {
+    set((state) => ({
+      classCode: {
+        ...state.classCode,
+        [classId]: {
+          ...state.classCode[classId],
+          shared: true,
+        },
+      },
+    }));
   },
   clearClassData: () => {
     set({ classData: {} });
   },
   setClassData: async (classID) => {
-    const response = await getClassDetails(classID);
-    console.log(response.data);
-    set({ classData: response.data });
+    const { data } = await getClassDetails(classID);
+    set({ classData: data });
   },
   createClassData: {},
   setCreateClassData: (data) => {

@@ -19,6 +19,7 @@ const StudentHome = () => {
     toggleSidebar,
     userLoggingIn,
     setUserLogginIn,
+    joinClassOpen,
   } = uselocalStore();
 
   useEffect(() => {
@@ -32,7 +33,9 @@ const StudentHome = () => {
 
   if (userLoggingIn) return <LoginRole />;
   return (
-    <div className="h-screen w-screen py-[10vh]  bg-HomeBG-main ">
+    <div
+      className={`h-screen w-screen py-[10vh]  bg-HomeBG-main transition-all duration-300 ${joinClassOpen ? "brightness-[20%]" : "brightness-100"} `}
+    >
       <div className="flex h-full gap-[2rem]">
         <SidebarList />
         <div

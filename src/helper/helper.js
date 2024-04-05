@@ -7,7 +7,6 @@ const baseURL = "http://localhost:8080";
 export async function getClasses(role, roleID) {
   try {
     const url = `${baseURL}/api/${role ? "students" : "teachers"}/${roleID}/getclassNames`;
-    console.log(url);
     const res = await axios.get(url);
     return res.data;
   } catch (err) {
@@ -37,12 +36,59 @@ export async function getTopicDetails(topicID) {
   }
 }
 
-export async function joinClass(studentID , classID){
+export async function joinClass(studentID, code) {
   try {
-    const res = await axios.post(`${baseURL}/api/joinclass`, {studentID , classID})
-    console.log(res.data);    
+    const res = await axios.post(
+      `${baseURL}/api/students/${studentID}/joinClass/`,
+      {
+        code,
+      }
+    );
+    console.log(res.data);
   } catch (error) {
-    throw error
-    
+    throw error;
+  }
+}
+
+export async function addClassCode(classID, code) {
+  try {
+    const res = await axios.post(`${baseURL}/api/classes/${classID}/addCode`, {
+      code,
+    });
+    console.log(res.data);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getPeople(classID) {
+  try {
+    const response = await axios.get(
+      `${baseURL}/api/classes/${classID}/people`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function cancelRequest(reqID) {
+  try {
+    const response = await axios.post(`${baseURL}/api/cancelRequest`, {
+      reqID,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function acceptRequest(reqID) {
+  try {
+    const response = await axios.post(`${baseURL}/api/accept`, { reqID });
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 }

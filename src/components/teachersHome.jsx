@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import SidebarList from "../elements/sidebarList";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { useFormik } from "formik";
 import AddClassBox from "../elements/addClassbox";
-import { useClassData, uselocalStore } from "../store/store";
-import ClassList from "../elements/classList";
+import { uselocalStore } from "../store/store";
 import LoginRole from "../elements/LoginRole";
+import TeacherClassListPage from "../elements/TeacherClassListPage";
 
 const TeacherHome = () => {
-  const { addClassOpen, setAddClassOpen, userLoggingIn, setUserLogginIn } =
-    uselocalStore();
+  const {
+    addClassOpen,
+    setAddClassOpen,
+    userLoggingIn,
+    setUserLogginIn,
+    role,
+  } = uselocalStore();
+
+  const [classPage, setClassPage] = useState(true);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -21,7 +23,20 @@ const TeacherHome = () => {
 
     // Clear the timeout to avoid memory leaks
     return () => clearTimeout(timeout);
-  }, []); // Empty dependency array ensures this effect runs only once
+  }, [role]); // Empty dependency array ensures this effect runs only once
+
+  const generateClassCode = () => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let randomString = "";
+
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters[randomIndex];
+    }
+
+    return randomString;
+  };
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -53,9 +68,8 @@ const TeacherHome = () => {
           <div
             className={`content absolute md:static w-[100vw] md:w-[100%] bg-HomeBG-content  h-[90vh]  overflow-auto`}
           >
-            <div className="title h-[10%] flex py-2 px-4 justify-center text-white ">
-              Title
-            </div>
+           
+            <TeacherClassListPage />
           </div>
         </div>
       </div>

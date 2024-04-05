@@ -7,16 +7,35 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import OTPInput from "./ClassCode";
+import { useUserData, uselocalStore } from "../store/store";
+import { Alert } from "@mui/material";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { joinClass } from "../helper/helper";
 
 export default function MuiDialogBox() {
+  const { decodedData } = useUserData();
   const [open, setOpen] = React.useState(false);
+  const { setJoinClassOpen, EnteredClassCode } = uselocalStore();
+  const [validate, setValidate] = React.useState(false);
+
+  const { roleID } = decodedData(localStorage.getItem("token"));
+
+  useGSAP(
+    () => {
+      gsap.fromTo("#alert", { y: 1000 }, { y: 0, duration: 0.3 });
+    },
+    { dependencies: [validate] }
+  );
 
   const handleClickOpen = () => {
     setOpen(true);
+    setJoinClassOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setJoinClassOpen(false);
   };
 
   return (
@@ -40,12 +59,26 @@ export default function MuiDialogBox() {
         onClose={handleClose}
         PaperProps={{
           component: "form",
+
           onSubmit: (event) => {
             event.preventDefault();
-            handleClose();
+            joinClass(roleID, EnteredClassCode);
+
+            if (EnteredClassCode.length < 6 || !EnteredClassCode) {
+              setValidate(true);
+              setTimeout(() => {
+                setValidate(false);
+              }, 2000);
+            } else {
+              setValidate(false);
+              handleClose();
+            }
           },
+
           sx: {
-            backgroundColor: "transparent",
+            backgroundColor: "#070808",
+            borderRadius: "20px",
+            // backdropFilter: "blur(10px)",
             color: "white",
           },
         }}
@@ -97,6 +130,11 @@ export default function MuiDialogBox() {
           </Button>
         </DialogActions>
       </Dialog>
+      {validate && (
+        <div id="alert" className=" fixed bottom-10">
+          <Alert severity="error">Enter valid Class code!!!</Alert>
+        </div>
+      )}
     </React.Fragment>
   );
 }

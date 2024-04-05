@@ -15,7 +15,7 @@ import Loading from "../elements/Loading";
 import { useClassData, useUserData, uselocalStore } from "../store/store";
 import { useFormik } from "formik";
 import AddClassBox from "../elements/addClassbox";
-import JoinClass from "../elements/JoinClass";
+import People from "../elements/People";
 
 const ClassPage = () => {
   const { classID } = useParams();
@@ -23,6 +23,7 @@ const ClassPage = () => {
   const { role } = uselocalStore();
   const { addClassOpen, setAddClassOpen, joinClassOpen, EnteredClassCode } =
     uselocalStore();
+  const [subPage, setSubPage] = useState(true);
 
   useEffect(() => {
     console.log(EnteredClassCode);
@@ -35,20 +36,39 @@ const ClassPage = () => {
     <div className="relative">
       {addClassOpen && <AddClassBox />}
       <div
-        className={`h-screen w-screen py-[10vh] flex flex-col  transition-all duration-300 ${addClassOpen ? "brightness-[30%]" : ""} bg-HomeBG-main `}
+        className={`h-screen w-screen py-[10vh] flex flex-col  transition-all duration-300 ${addClassOpen ? "brightness-[20%]" : ""} bg-HomeBG-main `}
       >
-        <div className="text-white">
-          Entered Class Code : {EnteredClassCode}
-        </div>
-        <div className={`flex w-full`}>
+        <div className={`flex w-full gap-[2rem]`}>
           <SidebarList />
           <div
-            className={`content absolute md:static w-[100vw] md:w-[100%] flex flex-col bg-HomeBG-content h-[90vh]  overflow-auto`}
+            className={`content absolute md:static rounded-2xl w-[100vw] md:w-[100%] flex flex-col bg-HomeBG-content h-[90vh]  overflow-auto`}
           >
-            {Object.keys(classData).length ? (
-              <ClassList classData={classData} />
+            <div className="title h-[5%] p-4  flex gap-4 items-center  justify-start   text-white ">
+              <span
+                className={`px-4 ${subPage ? "bg-gray-500" : ""} rounded-2xl cursor-pointer`}
+                onClick={() => {
+                  setSubPage(true);
+                }}
+              >
+                Classes
+              </span>
+              <span
+                className={`px-4 ${subPage ? "" : "bg-gray-500"} rounded-2xl cursor-pointer`}
+                onClick={() => {
+                  setSubPage(false);
+                }}
+              >
+                People
+              </span>
+            </div>
+            {subPage ? (
+              Object.keys(classData).length ? (
+                <ClassList classData={classData} />
+              ) : (
+                <Loading />
+              )
             ) : (
-              <Loading />
+              <People />
             )}
           </div>
         </div>

@@ -3,9 +3,8 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useUserData, uselocalStore } from "../store/store";
 
-const AddClassBox = () => { 
-
-  const BASEURL = "https://a6f2-103-251-227-203.ngrok-free.app ";
+const AddClassBox = () => {
+  const BASEURL = "http://localhost:8080";
 
   const [subjects, setSubjects] = useState([]);
   const clsConfig = {
@@ -29,10 +28,7 @@ const AddClassBox = () => {
     }
 
     await axios
-      .post(
-        `${BASEURL}/api/teachers/${roleID}/createclass`,
-        classData
-      )
+      .post(`${BASEURL}/api/teachers/${roleID}/createclass`, classData)
       .then((res) => {
         console.log("res : ", res);
         setClassData(clsConfig);
