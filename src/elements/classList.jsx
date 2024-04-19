@@ -18,7 +18,8 @@ import { uselocalStore } from "../store/store";
 
 const ClassList = ({ classData }) => {
   const [openSubject, setOpenSubject] = useState({});
-  const { role} = uselocalStore();
+  const { role, addTopicOpen, setAddTopicOpen, setAddTopicSubId } =
+    uselocalStore();
   useEffect(() => {
     const updateSubjectList = () => {
       const newOpenSubject = {}; // Initialize a new object to hold the updated state
@@ -83,7 +84,8 @@ const ClassList = ({ classData }) => {
                       <span
                         className="bg-HomeBG-side px-2 py-1 text-xs rounded-2xl hover:bg-gray-500 cursor-pointer transition-all duration-150"
                         onClick={() => {
-                          console.log(sub._id);
+                          setAddTopicSubId(sub._id);
+                          setAddTopicOpen(true);
                         }}
                       >
                         add Topic <FontAwesomeIcon icon={faPlus} />

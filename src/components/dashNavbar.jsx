@@ -26,8 +26,9 @@ const DahsNavbar = () => {
     addClassOpen,
     setAddClassOpen,
     role,
-    joinClassOpen,
     setJoinClassOpen,
+    setAddTopicOpen,
+    setAddTopicSubId,
   } = uselocalStore();
   const toggleaddClassOpen = () => {
     setAddClassOpen(!addClassOpen);
@@ -39,6 +40,8 @@ const DahsNavbar = () => {
         // Update state when the "Escape" key is pressed
         setAddClassOpen(false);
         setJoinClassOpen(false);
+        setAddTopicOpen(false);
+        setAddTopicSubId(null);
       }
     };
 

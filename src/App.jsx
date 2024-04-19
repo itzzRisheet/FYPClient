@@ -9,6 +9,7 @@ import ClassPage from "./components/classPage";
 import TopicPage from "./components/TopicPage";
 import TeacherHome from "./components/teachersHome";
 
+
 const router = createBrowserRouter([
   {
     path: "/",

@@ -50,6 +50,20 @@ export async function joinClass(studentID, code) {
   }
 }
 
+export async function addTopics(subjectID, topics) {
+  try {
+    const {data} = await axios.post(
+      `${baseURL}/api/subjects/${subjectID}/addTopics`,
+      { topics }
+    );
+    return data.response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUsers(ids) {}
+
 export async function addClassCode(classID, code) {
   try {
     const res = await axios.post(`${baseURL}/api/classes/${classID}/addCode`, {
@@ -73,10 +87,12 @@ export async function getPeople(classID) {
   }
 }
 
-export async function cancelRequest(reqID) {
+export async function cancelRequest(reqID, classID, studentID) {
   try {
     const response = await axios.post(`${baseURL}/api/cancelRequest`, {
       reqID,
+      classID,
+      studentID,
     });
     return response.data;
   } catch (error) {
@@ -84,10 +100,14 @@ export async function cancelRequest(reqID) {
   }
 }
 
-export async function acceptRequest(reqID) {
+export async function acceptRequest(reqID, classID, studentID) {
   try {
-    const response = await axios.post(`${baseURL}/api/accept`, { reqID });
-    return response.data;
+    const response = await axios.post(`${baseURL}/api/acceptRequest`, {
+      reqID,
+      classID,
+      studentID,
+    });
+    return response;
   } catch (error) {
     throw error;
   }

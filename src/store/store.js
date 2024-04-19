@@ -5,6 +5,10 @@ import { getClassDetails, getClasses, getTopicDetails } from "../helper/helper";
 
 export const uselocalStore = create((set) => ({
   userLoggingIn: true,
+  responseMSG: "",
+  setResponseMSG: (msg) => {
+    set({ responseMSG: msg });
+  },
   setUserLogginIn: (val) => {
     set({ userLoggingIn: val });
   },
@@ -17,6 +21,14 @@ export const uselocalStore = create((set) => ({
   addClassOpen: false,
   setAddClassOpen: (val) => {
     set({ addClassOpen: val });
+  },
+  addTopicOpen: false,
+  setAddTopicOpen: (val) => {
+    set({ addTopicOpen: val });
+  },
+  addTopicSubId: "",
+  setAddTopicSubId: (val) => {
+    set({ addTopicSubId: val });
   },
 
   joinClassOpen: false,
@@ -78,6 +90,7 @@ export const useClassData = create((set, get) => ({
   classCode: {},
   setClassList: async (role, roleID) => {
     const { data } = await getClasses(role, roleID);
+    console.log(data);
     data.map((cls) => {
       set((state) => ({
         classCode: {
@@ -116,6 +129,17 @@ export const useClassData = create((set, get) => ({
   setClassData: async (classID) => {
     const { data } = await getClassDetails(classID);
     set({ classData: data });
+  },
+  updateSubjectInClass: async (newsubject) => {
+    const subIndex = get().classData.Subjects.findIndex(
+      (sub) => sub._id === newsubject._id
+    );
+
+    if (subIndex !== -1) {
+      set({
+        [classData.Subjects[subIndex]]: newsubject,
+      });
+    }
   },
   createClassData: {},
   setCreateClassData: (data) => {

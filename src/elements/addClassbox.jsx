@@ -30,6 +30,7 @@ const AddClassBox = () => {
     await axios
       .post(`${BASEURL}/api/teachers/${roleID}/createclass`, classData)
       .then((res) => {
+        
         console.log("res : ", res);
         setClassData(clsConfig);
       })

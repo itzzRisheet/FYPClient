@@ -16,18 +16,14 @@ import { useClassData, useUserData, uselocalStore } from "../store/store";
 import { useFormik } from "formik";
 import AddClassBox from "../elements/addClassbox";
 import People from "../elements/People";
+import AddTopicBox from "../elements/addTopicBox";
 
 const ClassPage = () => {
   const { classID } = useParams();
   const { classData, setClassData } = useClassData();
   const { role } = uselocalStore();
-  const { addClassOpen, setAddClassOpen, joinClassOpen, EnteredClassCode } =
-    uselocalStore();
+  const { addClassOpen, addTopicOpen } = uselocalStore();
   const [subPage, setSubPage] = useState(true);
-
-  useEffect(() => {
-    console.log(EnteredClassCode);
-  }, [EnteredClassCode]);
 
   useEffect(() => {
     setClassData(classID);
@@ -35,8 +31,9 @@ const ClassPage = () => {
   return (
     <div className="relative">
       {addClassOpen && <AddClassBox />}
+      {addTopicOpen && <AddTopicBox />}
       <div
-        className={`h-screen w-screen py-[10vh] flex flex-col  transition-all duration-300 ${addClassOpen ? "brightness-[20%]" : ""} bg-HomeBG-main `}
+        className={`h-screen w-screen py-[10vh] flex flex-col  transition-all duration-300 ${addClassOpen || addTopicOpen ? "brightness-[20%]" : ""} bg-HomeBG-main `}
       >
         <div className={`flex w-full gap-[2rem]`}>
           <SidebarList />

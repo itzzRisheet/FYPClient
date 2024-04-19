@@ -6,13 +6,41 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, fabClasses } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SidebarList from "../elements/sidebarList";
 import VideosList from "../elements/VideoList";
 import { uselocalStore } from "../store/store";
 import LoginRole from "../elements/LoginRole";
+import { io } from "socket.io-client";
+import { toast } from "react-toastify";
+import msgTune from "../assets/notification.mp3";
+
+const socket = io.connect("http://localhost:4000");
 
 const StudentHome = () => {
+  const [msg, setMsg] = useState();
+
+  useEffect(() => {
+    socket.on("receiveMsg", (data) => {
+      console.log(data);
+      setMsg(data.message);
+    });
+
+    socket.on("studentAdded", (data) => {
+      console.log(data);
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    if (msg) {
+      const sound = new Audio(msgTune);
+      sound.play();
+      toast(msg);
+
+      setMsg("");
+    }
+  }, [msg]);
+
   const {
     showSidebar,
     setShowSidebar,

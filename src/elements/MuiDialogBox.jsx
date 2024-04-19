@@ -62,8 +62,8 @@ export default function MuiDialogBox() {
 
           onSubmit: (event) => {
             event.preventDefault();
+            console.log(EnteredClassCode);
             joinClass(roleID, EnteredClassCode);
-
             if (EnteredClassCode.length < 6 || !EnteredClassCode) {
               setValidate(true);
               setTimeout(() => {

@@ -11,17 +11,63 @@ import {
   faClose,
   faCross,
 } from "@fortawesome/free-solid-svg-icons";
+import { useUserData } from "../store/store";
+import io from "socket.io-client";
+
+import msgTune from "../assets/notification.mp3";
+
+// const socket = io.connect("http://localhost:4000");
 
 const People = () => {
   const { classID } = useParams();
   const [people, setPeople] = useState([]);
   const [requests, setRequests] = useState([]);
   const [showRequests, setShowRequests] = useState(false);
+  const { decodedData } = useUserData();
+  const [socket, setSocket] = useState(null);
+
+  const { roleID } = decodedData(localStorage.getItem("token"));
+
+  useEffect(() => {
+    const newSocket = io.connect("http://localhost:4000");
+    setSocket(newSocket);
+
+    // Clean up the socket connection when component unmounts
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const sound = new Audio(msgTune);
+
+    const handleRequestCreate = (data) => {
+      setRequests((prev) => [...prev, data]);
+      sound.play();
+    };
+
+    const handleRequestDeleted = (data) => {
+      setRequests((prev) => prev.filter((req) => data._id !== req._id));
+    };
+
+    // Attach event listeners
+    if (socket) {
+      socket.on("requestCreate", handleRequestCreate);
+      socket.on("requestDeleted", handleRequestDeleted);
+      return () => {
+        // Clean up event listeners when the component unmounts
+
+        socket.off("requestCreate", handleRequestCreate);
+        socket.off("requestDeleted", handleRequestDeleted);
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { people, requests } = await getPeople(classID);
+        console.log(people);
         setPeople(people);
         setRequests(requests);
       } catch (error) {
@@ -36,10 +82,6 @@ const People = () => {
   }, [people]);
   const reqLen = useMemo(() => {
     return requests.length;
-  }, [requests]);
-
-  useEffect(() => {
-    console.log(requests);
   }, [requests]);
 
   return (
@@ -72,21 +114,31 @@ const People = () => {
             ) : (
               requests.map((req) => {
                 return (
-                  <li className="flex bc p-2 justify-between  items-center rounded-xl bg-HomeBG-side">
+                  <li className="flex border-[0.1px] border-white p-2 justify-between  items-center rounded-xl bg-black">
                     {req.studentData["name"]}{" "}
                     <span className="flex items-center gap-2">
                       <FontAwesomeIcon
                         icon={faCheck}
-                        className="hover:scale-105 bg-green-400 p-1 rounded-md cursor-pointer transition-all duration-150"
-                        onClick={() => {
-                          acceptRequest(req._id);
+                        className="hover:scale-110 bg-green-400 p-1 rounded-md cursor-pointer transition-all duration-300"
+                        onClick={async () => {
+                          const { status } = await acceptRequest(
+                            req._id,
+                            classID,
+                            req.studentID
+                          );
+                          if (status === 200) {
+                            const { people, requests } =
+                              await getPeople(classID);
+                            setPeople(people);
+                            setRequests(requests);
+                          }
                         }}
                       />
                       <FontAwesomeIcon
                         icon={faClose}
-                        className="hover:scale-105 bg-red-400 p-1 rounded-md cursor-pointer transition-all duration-150"
+                        className="hover:scale-110 bg-red-400 p-1 rounded-md cursor-pointer transition-all duration-300"
                         onClick={() => {
-                          cancelRequest(req._id);
+                          cancelRequest(req._id, classID, req.studentID);
                         }}
                       />
                     </span>
