@@ -16,7 +16,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 
-const   ChatBOT = () => {
+const ChatBOT = () => {
   const [receivingStatus, setReceivingStatus] = useState(true);
   const [msgList, setMsgList] = useState([]);
   const [msg, setMsg] = useState("");
@@ -73,8 +73,7 @@ const   ChatBOT = () => {
       <div className="chat-header chat-ele">
         <div className="head">Your assistant</div>
         <div className="ctrl">
-          <FontAwesomeIcon icon={faMinus} />
-          <FontAwesomeIcon icon={faXmark} />
+          <FontAwesomeIcon icon={faXmark} onClick={() => {}} />
         </div>
       </div>
       <div className="chat-body chat-ele">
@@ -142,6 +141,7 @@ const   ChatBOT = () => {
               type="text"
               name=""
               id=""
+              className="text-white"
               placeholder="message..."
               value={listeningStatus ? transcript : msg}
               onChange={(e) => {

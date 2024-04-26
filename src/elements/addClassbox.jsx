@@ -1,154 +1,162 @@
-import axios from "axios";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { useUserData, uselocalStore } from "../store/store";
+import React, { useState } from "react";
+import { addTopics } from "../helper/helper";
+import { uselocalStore } from "../store/store";
 
 const AddClassBox = () => {
-  const BASEURL = "http://localhost:8080";
-
+  const [classData, setClassData] = useState({ title: "", description: "" });
   const [subjects, setSubjects] = useState([]);
-  const clsConfig = {
-    title: "",
-    description: "",
-    subjects: [],
-  };
-  const [classData, setClassData] = useState();
-  const [addingSubject, setAddingSubject] = useState(false);
-  const { decodedData, token } = useUserData();
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedDesc, setEditedDesc] = useState("");
+  const { addTopicSubId, setAddTopicSubId } = uselocalStore();
 
-  let { roleID } = decodedData(token);
-  const toggleAddingSubject = () => {
-    setAddingSubject(!addingSubject);
+  const handleEdit = (index) => {
+    setEditingIndex(index);
+    setEditedTitle(subjects[index].title);
+    setEditedDesc(subjects[index].description);
   };
 
-  const handleAddClassSubmit = async () => {
-    if (!classData.title) {
-      console.log("Please enter class details!!!!");
-      return;
-    }
-
-    await axios
-      .post(`${BASEURL}/api/teachers/${roleID}/createclass`, classData)
-      .then((res) => {
-        
-        console.log("res : ", res);
-        setClassData(clsConfig);
-      })
-      .catch((err) => {
-        console.log("Error : ", err);
-      });
+  const handleSave = (index) => {
+    const updatedSubjects = [...subjects];
+    updatedSubjects[index].title = editedTitle;
+    updatedSubjects[index].description = editedDesc;
+    setSubjects(updatedSubjects);
+    setEditingIndex(null);
   };
 
-  const formik = useFormik({
-    initialValues: { title: "", desc: "" },
-    validateOnBlur: false,
-    validateOnChange: false,
-    onSubmit: async (values) => {
-      setSubjects((prev) => [...prev, values]);
-      formik.setValues(formik.initialValues);
-    },
-  });
+  const handleCancel = () => {
+    setEditingIndex(null);
+  };
 
-  useEffect(() => {
-    setClassData((prev) => ({ ...prev, subjects: subjects }));
-  }, [subjects]);
+  const handleAddClass = () => {
+    // Handle adding class logic
+    console.log("Class Data:", classData);
+  };
+
+  const handleAddSubject = () => {
+    setSubjects([...subjects, { title: "", description: "" }]);
+  };
 
   return (
-    <div
-      className={`flex flex-col gap-2 items-center justify-center absolute top-0 left-0 h-screen w-screen z-20`}
-    >
-      <div className=" flex items-center justify-center gap-[2rem] h-[60%] w-[80%]">
-        <div className=" relative classForm flex flex-col items-center  gap-2 py-4 bg-[#0c0908] overflow-auto h-[80%] w-[40%] ">
-          <div className="title flex flex-col gap-2 w-[80%] h-auto ">
-            <div className="relative">
+    <div className="absolute z-50 flex justify-center items-center top-0 left-0 h-full w-full bg-gray-800 bg-opacity-75">
+      <div className="flex gap-8">
+        {/* Add Class Card */}
+        <div className="w-[300px] p-6 bg-gray-700 text-white rounded-lg shadow-lg flex flex-col justify-between">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Add Class</h2>
+            <div className="mb-4">
               <input
                 type="text"
-                className="input "
-                placeholder="Enter Title"
-                value={classData?.title}
-                onChange={(e) => {
-                  setClassData((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                  }));
-                }}
+                className="input"
+                placeholder="Class Title"
+                value={classData.title}
+                onChange={(e) =>
+                  setClassData({ ...classData, title: e.target.value })
+                }
               />
-              <span className="input_border"></span>
             </div>
-            <div className="relative">
-              <input
-                type="text"
-                className="input "
-                placeholder="Enter description"
-                value={classData?.description}
-                onChange={(e) => {
-                  setClassData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }));
-                }}
+            <div className="mb-4">
+              <textarea
+                className="input resize-none"
+                placeholder="Class Description"
+                value={classData.description}
+                onChange={(e) =>
+                  setClassData({ ...classData, description: e.target.value })
+                }
               />
-              <span className="input_border"></span>
             </div>
-            <div
-              className="bg-HomeBG-side absolute bottom-0 right-0 m-[2rem] px-4 py-2 rounded-2xl cursor-pointer hover:bg-cyan-800 transition-all duration-150"
+            <button
+              className={`btn ${classData.title === "" ? "disabled" : ""}`}
+              onClick={handleAddClass}
+              disabled={classData.title === ""}
+            >
+              Add Class
+            </button>
+          </div>
+          <div>
+            <button
+              className="btn btn-primary"
               onClick={() => {
-                handleAddClassSubmit();
+                if (subjects.length > 0) {
+                  addTopics(addTopicSubId, subjects);
+                }
               }}
             >
-              Add class
-            </div>
+              Add Subjects to Class
+            </button>
           </div>
-          <ul className="w-[80%] flex flex-col gap-[1rem]  overflow-auto">
-            <span className="text-white">Subjects</span>
-            {subjects.length > 0 &&
-              subjects.map((sub) => {
-                return <li className="text-white ">{sub.title}</li>;
-              })}
-          </ul>
         </div>
-        <div
-          className={`subjectForm bg-[#0c0908]  p-4 flex flex-col gap-3 justify-between transition-all duration-300 ${addingSubject ? "h-[50%]" : "h-auto"} rounded-2xl  w-[20vw]`}
-        >
-          <div
-            className="bg-HomeBG-content w-[100%] text-center px-3 text-white py-2 rounded-2xl transition-all duration-150 hover:bg-HomeBG-main cursor-pointer"
-            onClick={() => {
-              toggleAddingSubject();
-            }}
-          >
-            add Subject
-          </div>
-          {addingSubject && (
-            <form
-              onSubmit={formik.handleSubmit}
-              className="flex flex-col gap-2"
-            >
-              <div className="relative">
-                <input
-                  {...formik.getFieldProps("title")}
-                  type="text"
-                  className="input"
-                  placeholder="Enter Subject title"
-                />
-                <span className="input_border"></span>
+
+        {/* Subjects Card */}
+        <div className="w-[400px] h-[400px] overflow-y-auto p-4 bg-gray-700 text-white rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 sticky top-0 bg-gray-700 z-10">
+            Subjects
+          </h2>
+          {subjects.length > 0 ? (
+            subjects.map((subject, index) => (
+              <div key={index} className="border-b border-gray-600 py-2">
+                {editingIndex === index ? (
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={editedTitle}
+                      onChange={(e) => setEditedTitle(e.target.value)}
+                      className="mr-2 px-2 py-1 bg-gray-800 text-white border border-gray-600 rounded"
+                    />
+                    <input
+                      type="text"
+                      value={editedDesc}
+                      onChange={(e) => setEditedDesc(e.target.value)}
+                      className="mr-2 px-2 py-1 bg-gray-800 text-white border border-gray-600 rounded"
+                    />
+                    <button
+                      className="px-2 py-1 bg-green-500 text-white rounded mr-2"
+                      onClick={() => handleSave(index)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-semibold">{subject.title}</h3>
+                      <p className="text-sm">{subject.description}</p>
+                    </div>
+                    <div>
+                      <button
+                        className="text-sm text-blue-500 hover:text-blue-700 mr-2"
+                        onClick={() => handleEdit(index)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="text-sm text-red-500 hover:text-red-700"
+                        onClick={() => {
+                          const updatedSubjects = subjects.filter(
+                            (_, i) => i !== index
+                          );
+                          setSubjects(updatedSubjects);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="relative">
-                <input
-                  {...formik.getFieldProps("desc")}
-                  type="text"
-                  className="input "
-                  placeholder="Enter description"
-                />
-                <span className="input_border"></span>
-              </div>
-              <button
-                type="submit"
-                className={`"bg-HomeBG-content  text-center px-3 text-white py-2 rounded-2xl transition-all duration-150 hover:bg-HomeBG-main cursor-pointer`}
-              >
-                submit
-              </button>
-            </form>
+            ))
+          ) : (
+            <p>No subjects yet</p>
           )}
+          <button className="btn btn-primary" onClick={handleAddSubject}>
+            Add Subject
+          </button>
         </div>
       </div>
     </div>

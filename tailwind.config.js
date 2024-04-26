@@ -12,7 +12,7 @@ export default {
         transparent: "transparent",
         HomeBG: {
           main: "#020202",
-          side: "#506c77",
+          side: "#334155",
           content: "#070808",
         },
         btn: {

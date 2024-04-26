@@ -50,13 +50,18 @@ export async function joinClass(studentID, code) {
   }
 }
 
+export async function addLectures(lectures, topicID){
+  const response = await axios.post(`${baseURL}/api/`)
+}
+
 export async function addTopics(subjectID, topics) {
   try {
-    const {data} = await axios.post(
+    const response = await axios.post(
       `${baseURL}/api/subjects/${subjectID}/addTopics`,
       { topics }
     );
-    return data.response;
+
+    return { data: response.data, status: response.status };
   } catch (error) {
     throw error;
   }

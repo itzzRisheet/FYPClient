@@ -12,7 +12,8 @@ const AddTopicBox = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDesc, setEditedDesc] = useState("");
 
-  const { addTopicSubId, setAddTopicSubId } = uselocalStore();
+  const { addTopicSubId, setAddTopicSubId, setPopupOpen, setPopupMsg } =
+    uselocalStore();
 
   const handleEdit = (index) => {
     setEditingIndex(index);
@@ -94,7 +95,18 @@ const AddTopicBox = () => {
               className="w-full  bg-gray-800 hover:bg-gray-600 transition-all duration-200 rounded-3xl py-1"
               onClick={async () => {
                 if (topics.length > 0) {
-                  await addTopics(addTopicSubId, topics);
+                  const { data, status } = await addTopics(
+                    addTopicSubId,
+                    topics
+                  );
+                  if (status === 201) {
+                    setPopupMsg("Successfully added topics to the class!!!");
+                    setPopupOpen(true);
+                  } else if (status !== 200) {
+                    setPopupMsg("Error adding topics!!!");
+                    setPopupOpen(true);
+                  }
+                  console.log(data);
                 }
               }}
             >

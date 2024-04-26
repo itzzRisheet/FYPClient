@@ -7,23 +7,86 @@ import ConditionalNavbar from "./components/conditionalNavbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRobot } from "@fortawesome/free-solid-svg-icons";
+import { faCancel, faRobot } from "@fortawesome/free-solid-svg-icons";
 import { useGSAP } from "@gsap/react";
 import ChatBOT from "./elements/ChatBOT";
 import { uselocalStore } from "./store/store";
+import { Alert, Button, IconButton, Snackbar } from "@mui/material";
 
 const Layout = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [bounceEffect, setBounceEffect] = useState(true);
-  const { addTopicOpen , addClassOpen} = uselocalStore();
+
+  const {
+    PopupMsg,
+    addTopicOpen,
+    PopupOpen,
+    setPopupOpen,
+    addClassOpen,
+    setAddClassOpen,
+    setJoinClassOpen,
+    setAddTopicOpen,
+    setAddTopicSubId,
+    setQuizOpen,
+    setTranscriptOpen,
+    setResourcesOpen,
+    setAddLectureOpen,
+  } = uselocalStore();
 
   useEffect(() => {
-    if(addClassOpen || addTopicOpen){
+    const handleKeyPress = (event) => {
+      if (event.key === "Escape") {
+        // Update state when the "Escape" key is pressed
+        setAddClassOpen(false);
+        setJoinClassOpen(false);
+        setAddTopicOpen(false);
+        setAddTopicSubId(null);
+        setQuizOpen(false);
+        setTranscriptOpen(false);
+        setResourcesOpen(false);
+        setAddLectureOpen(false);
+      }
+    };
+
+    // Add event listener when component mounts
+    window.addEventListener("keydown", handleKeyPress);
+
+    // Remove event listener when component unmounts
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (addClassOpen || addTopicOpen) {
       setBounceEffect(false);
-    }else{
+    } else {
       setBounceEffect(true);
     }
-  },[addTopicOpen , addClassOpen ])
+  }, [addTopicOpen, addClassOpen]);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setPopupOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      {/* <Button color="secondary" size="small" onClick={handleClose}>
+        close
+      </Button> */}
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <FontAwesomeIcon icon={faCancel} />
+      </IconButton>
+    </React.Fragment>
+  );
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -41,7 +104,6 @@ const Layout = () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
-
 
   return (
     <div>
@@ -70,6 +132,13 @@ const Layout = () => {
           />
         )}
       </div>
+      <Snackbar
+        open={PopupOpen}
+        autoHideDuration={700}
+        onClose={handleClose}
+        message={PopupMsg}
+        action={action}
+      />
     </div>
   );
 };

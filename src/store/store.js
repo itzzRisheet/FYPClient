@@ -15,6 +15,34 @@ export const uselocalStore = create((set) => ({
   role: localStorage.getItem("token")
     ? jwtDecode(localStorage.getItem("token")).role
     : 0,
+  PopupMsg: "",
+  setPopupMsg: (msg) => {
+    set({ PopupMsg: msg });
+  },
+  PopupOpen: false,
+  setPopupOpen: (val) => {
+    set({ PopupOpen: val });
+  },
+  PopupStatus: true,
+  setPopupStatus: (val) => {
+    set({ setPopupStatus: val });
+  },
+  QuizOpen: false,
+  setQuizOpen: (val) => {
+    set({ QuizOpen: val });
+  },
+  ResourcesOpen: false,
+  setResourcesOpen: (val) => {
+    set({ ResourcesOpen: val });
+  },
+  TranscriptOpen: false,
+  setTranscriptOpen: (val) => {
+    set({ TranscriptOpen: val });
+  },
+  addLectureOpen: false,
+  setAddLectureOpen: (val) => {
+    set({ addLectureOpen: val });
+  },
   accountCard: false,
   showSidebar: false,
   showLoginPage: false,

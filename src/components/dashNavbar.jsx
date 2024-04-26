@@ -29,6 +29,9 @@ const DahsNavbar = () => {
     setJoinClassOpen,
     setAddTopicOpen,
     setAddTopicSubId,
+    setQuizOpen,
+    setTranscriptOpen,
+    setResourcesOpen,
   } = uselocalStore();
   const toggleaddClassOpen = () => {
     setAddClassOpen(!addClassOpen);
@@ -42,6 +45,9 @@ const DahsNavbar = () => {
         setJoinClassOpen(false);
         setAddTopicOpen(false);
         setAddTopicSubId(null);
+        setQuizOpen(false);
+        setTranscriptOpen(false);
+        setResourcesOpen(false);
       }
     };
 

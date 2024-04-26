@@ -1,19 +1,9 @@
-import {
-  faBars,
-  faHamburger,
-  faPlus,
-  faSchool,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SidebarList from "../elements/sidebarList";
 import { useParams } from "react-router-dom";
-import { getClassDetails } from "../helper/helper";
 import ClassList from "../elements/classList";
 import Loading from "../elements/Loading";
-import { useClassData, useUserData, uselocalStore } from "../store/store";
-import { useFormik } from "formik";
+import { useClassData, uselocalStore } from "../store/store";
 import AddClassBox from "../elements/addClassbox";
 import People from "../elements/People";
 import AddTopicBox from "../elements/addTopicBox";
