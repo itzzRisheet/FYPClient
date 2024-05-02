@@ -31,6 +31,10 @@ export const uselocalStore = create((set) => ({
   setQuizOpen: (val) => {
     set({ QuizOpen: val });
   },
+  addQuizBoxOpen: false,
+  setAddQuizBoxOpen: (val) => {
+    set({ addQuizBoxOpen: val });
+  },
   ResourcesOpen: false,
   setResourcesOpen: (val) => {
     set({ ResourcesOpen: val });
@@ -94,6 +98,22 @@ export const uselocalStore = create((set) => ({
   EnteredClassCode: "",
   setEnteredClassCode: (val) => {
     set({ EnteredClassCode: val });
+  },
+  alertBox: false,
+  setAlertBox: (val) => {
+    set({ alertBox: val });
+  },
+  alertMsg: "",
+  setAlertMsg: (val) => {
+    set({ alertMsg: val });
+  },
+  confirmation: false,
+  setConfirmation: (val) => {
+    set({ confirmation: val });
+  },
+  addResourcesBox: false,
+  setAddResources: (val) => {
+    set({ addResourcesBox: val });
   },
 }));
 

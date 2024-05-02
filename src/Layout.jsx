@@ -31,6 +31,10 @@ const Layout = () => {
     setTranscriptOpen,
     setResourcesOpen,
     setAddLectureOpen,
+    addQuizBoxOpen,
+    alertMsg,
+    confirmation,
+    alertBox,
   } = uselocalStore();
 
   useEffect(() => {
@@ -45,6 +49,7 @@ const Layout = () => {
         setTranscriptOpen(false);
         setResourcesOpen(false);
         setAddLectureOpen(false);
+        addQuizBoxOpen(false);
       }
     };
 
@@ -74,9 +79,6 @@ const Layout = () => {
 
   const action = (
     <React.Fragment>
-      {/* <Button color="secondary" size="small" onClick={handleClose}>
-        close
-      </Button> */}
       <IconButton
         size="small"
         aria-label="close"

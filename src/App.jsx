@@ -7,6 +7,7 @@ import StudentHome from "./components/studentHome";
 import ClassPage from "./components/classPage";
 import TopicPage from "./components/TopicPage";
 import TeacherHome from "./components/teachersHome";
+import Temp from "./elements/Temp";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/topics/:topicID",
         element: <TopicPage />,
+      },
+      {
+        path: "/temp",
+        element: <Temp />,
       },
     ],
   },

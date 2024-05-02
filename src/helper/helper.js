@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useUserData } from "../store/store";
+import { useParams } from "react-router-dom";
 
 const baseURL = "http://localhost:8080";
 // const baseURL = "https://a6f2-103-251-227-203.ngrok-free.app";
@@ -45,6 +46,18 @@ export async function joinClass(studentID, code) {
       }
     );
     console.log(res.data);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getLectures(topicID) {
+  try {
+    const response = await axios.get(
+      `${baseURL}/api/topics/${topicID}/getlectures`
+    );
+
+    return { data: response.data, status: response.status };
   } catch (error) {
     throw error;
   }
@@ -122,6 +135,22 @@ export async function acceptRequest(reqID, classID, studentID) {
       studentID,
     });
     return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function addQuiz(questions, lectureID, forced) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/api/lectures/${lectureID}/addQuiz`,
+      {
+        questions,
+        forced,
+      }
+    );
+
+    return { data: response.data, status: response.status };
   } catch (error) {
     throw error;
   }

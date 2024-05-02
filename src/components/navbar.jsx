@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { uselocalStore } from "../store/store";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import Logo from "../assets/logo.jsx";
 
 const Navbar = () => {
   const { showLoginPage, setShowLoginPage, accountCard, setAccountCard } =
@@ -9,7 +10,7 @@ const Navbar = () => {
   const nav = useRef();
   useGSAP(
     () => {
-      gsap.fromTo("#nav", { scale: 0 }, { scale: 1 ,delay:0.5 });
+      gsap.fromTo("#nav", { scale: 0 }, { scale: 1, delay: 0.5 });
     },
     { scope: nav }
   );
@@ -23,7 +24,9 @@ const Navbar = () => {
         id="nav"
         className="w-[80%] h-[100%] text-white rounded-[30px]  flex justify-between  m-auto"
       >
-        <div className="flex items-center p-3">LOGO</div>
+        <div className="flex items-center p-3">
+          <Logo />
+        </div>
         <div className="h-[100%] px-4 hidden md:block ">
           <ul className="flex items-center gap-5 h-[100%] ">
             <li className="list">about</li>

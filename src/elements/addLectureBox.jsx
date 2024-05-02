@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { addLectures } from "../helper/helper";
 import { useParams } from "react-router-dom";
+import { uselocalStore } from "../store/store";
 
 const AddLectureBox = () => {
-  const { topicID} = useParams();
+  const { setPopupMsg, setPopupOpen, setAddLectureOpen } = uselocalStore();
+  const { topicID } = useParams();
   const [lectures, setLectures] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    link: "",
+    lec_link: "",
   });
   const [editIndex, setEditIndex] = useState(null); // New state to track the index being edited
 
@@ -21,15 +23,20 @@ const AddLectureBox = () => {
   };
 
   const handleAddLecture = () => {
+    if (!formData.title || !formData.lec_link) {
+      setPopupMsg("Title and lecture link can't be empty!!!");
+      setPopupOpen(true);
+      return;
+    }
     if (editIndex !== null) {
       const editedLectures = [...lectures];
       editedLectures[editIndex] = { ...formData };
       setLectures(editedLectures);
-      setFormData({ title: "", description: "", link: "" });
+      setFormData({ title: "", description: "", lec_link: "" });
       setEditIndex(null);
     } else {
       setLectures([...lectures, formData]);
-      setFormData({ title: "", description: "", link: "" });
+      setFormData({ title: "", description: "", lec_link: "" });
     }
   };
 
@@ -71,7 +78,6 @@ const AddLectureBox = () => {
               Description
             </label>
             <textarea
-
               id="description"
               name="description"
               value={formData.description}
@@ -82,16 +88,16 @@ const AddLectureBox = () => {
           </div>
           <div>
             <label
-              htmlFor="link"
+              htmlFor="lec_link"
               className="block text-sm font-medium text-white"
             >
-              Link
+              lec_link
             </label>
             <input
               type="text"
-              id="link"
-              name="link"
-              value={formData.link}
+              id="lec_link"
+              name="lec_link"
+              value={formData.lec_link}
               onChange={handleChange}
               className="mt-1 px-2 bg-black py-2 text-white focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
             />
@@ -105,14 +111,26 @@ const AddLectureBox = () => {
             {editIndex !== null ? "Save" : "Add Lecture"}{" "}
             {/* Change button text */}
           </button>
-          {editIndex === null &&
-           <button className="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-           onClick={() => {
-            addLectures(lectures, topicID);
-           }}>
-            Add all lectures
-            {/* Change button text */}
-          </button>}
+          {editIndex === null && (
+            <button
+              className="mt-4 bg-lime-600 hover:bg-lime-900 text-white font-bold py-2 px-4 rounded"
+              onClick={async () => {
+                const { data, status } = await addLectures(lectures, topicID);
+                console.log(status);
+                if (status === 200) {
+                  setPopupMsg("Lectures uploaded successfully!!!");
+                  setAddLectureOpen(false);
+                } else {
+                  setPopupMsg("error uploading Lectures!!");
+                  console.log(data);
+                }
+                setPopupOpen(true);
+              }}
+            >
+              upload all lectures
+              {/* Change button text */}
+            </button>
+          )}
         </div>
       </div>
       <div className="w-[35%] p-6 bg-gray-900 rounded-lg">
@@ -130,8 +148,11 @@ const AddLectureBox = () => {
                   {lecture.title}
                 </h3>
                 <p className="text-sm text-gray-500">{lecture.description}</p>
-                <a href={lecture.link} className="text-sm text-blue-500 underline">
-                  {lecture.link}
+                <a
+                  href={lecture.lec_link}
+                  className="text-sm text-blue-500 underline"
+                >
+                  {lecture.lec_link}
                 </a>
               </div>
               <div>
