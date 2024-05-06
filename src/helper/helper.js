@@ -89,7 +89,17 @@ export async function addTopics(subjectID, topics) {
   }
 }
 
-export async function getUsers(ids) {}
+export async function addSurvey(studentID, survey) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/students/${studentID}/addSurvey`,
+      { survey }
+    );
+    return { data: response.data, status: response.status };
+  } catch (error) {
+    throw error;
+  }
+}
 
 export async function addClassCode(classID, code) {
   try {
@@ -140,10 +150,10 @@ export async function acceptRequest(reqID, classID, studentID) {
   }
 }
 
-export async function addQuiz(questions, lectureID, forced) {
+export async function addQuiz(questions, topicID, forced) {
   try {
     const response = await axios.post(
-      `${baseURL}/api/lectures/${lectureID}/addQuiz`,
+      `${baseURL}/api/topics/${topicID}/addQuiz`,
       {
         questions,
         forced,

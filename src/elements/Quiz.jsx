@@ -1,129 +1,136 @@
 import React, { useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { uselocalStore } from "../store/store";
+import { useUserData, uselocalStore } from "../store/store";
+import { useNavigate } from "react-router-dom";
 
-const Quiz = () => {
+// const questionData = [
+//   {
+//     index: 1,
+//     question: "What is the capital of France?",
+//     options: {
+//       a: "Berlin",
+//       b: "Paris",
+//       c: "Madrid",
+//       d: "Rome",
+//     },
+//     answer: "b",
+//   },
+//   {
+//     index: 2,
+//     question: "Which planet is known as the Red Planet?",
+//     options: {
+//       a: "Earth",
+//       b: "Mars",
+//       c: "Jupiter",
+//       d: "Venus",
+//     },
+//     answer: "b",
+//   },
+//   {
+//     index: 3,
+//     question: 'Who wrote "Romeo and Juliet"?',
+//     options: {
+//       a: "Charles Dickens",
+//       b: "William Shakespeare",
+//       c: "Jane Austen",
+//       d: "Mark Twain",
+//     },
+//     answer: "b",
+//   },
+//   {
+//     index: 4,
+//     question: "What is the largest mammal in the world?",
+//     options: {
+//       a: "Elephant",
+//       b: "Blue Whale",
+//       c: "Giraffe",
+//       d: "Hippopotamus",
+//     },
+//     answer: "b",
+//   },
+//   {
+//     index: 5,
+//     question:
+//       "Which programming language is known for its flexibility and readability?",
+//     options: {
+//       a: "Java",
+//       b: "Python",
+//       c: "C++",
+//       d: "JavaScript",
+//     },
+//     answer: "b",
+//   },
+//   {
+//     index: 6,
+//     question: "What is the largest ocean on Earth?",
+//     options: {
+//       a: "Atlantic Ocean",
+//       b: "Indian Ocean",
+//       c: "Southern Ocean",
+//       d: "Pacific Ocean",
+//     },
+//     answer: "d",
+//   },
+//   {
+//     index: 7,
+//     question: 'Who is known as the "Father of Computer Science"?',
+//     options: {
+//       a: "Alan Turing",
+//       b: "Bill Gates",
+//       c: "Steve Jobs",
+//       d: "Mark Zuckerberg",
+//     },
+//     answer: "a",
+//   },
+//   {
+//     index: 8,
+//     question:
+//       "Which famous scientist developed the theory of general relativity?",
+//     options: {
+//       a: "Isaac Newton",
+//       b: "Galileo Galilei",
+//       c: "Albert Einstein",
+//       d: "Stephen Hawking",
+//     },
+//     answer: "c",
+//   },
+//   {
+//     index: 9,
+//     question: "What is the chemical symbol for water?",
+//     options: {
+//       a: "O2",
+//       b: "CO2",
+//       c: "H2O",
+//       d: "N2",
+//     },
+//     answer: "c",
+//   },
+//   {
+//     index: 10,
+//     question: "In which year did the Titanic sink?",
+//     options: {
+//       a: "1905",
+//       b: "1912",
+//       c: "1920",
+//       d: "1931",
+//     },
+//     answer: "b",
+//   },
+// ];
+
+const Quiz = ({ questionData }) => {
   const { QuizOpen } = uselocalStore();
+  const { decodedData } = useUserData();
+
+  const { roleID } = decodedData(localStorage.getItem("token"));
+  console.log(roleID);
+
+  const navigate = useNavigate();
 
   useGSAP(() => {
     gsap.fromTo("#quizContainer", { scale: 0 }, { scale: 1, duration: 0.5 });
   }, [QuizOpen]);
-
-  const questionData = [
-    {
-      index: 1,
-      question: "What is the capital of France?",
-      options: {
-        a: "Berlin",
-        b: "Paris",
-        c: "Madrid",
-        d: "Rome",
-      },
-      answer: "b",
-    },
-    {
-      index: 2,
-      question: "Which planet is known as the Red Planet?",
-      options: {
-        a: "Earth",
-        b: "Mars",
-        c: "Jupiter",
-        d: "Venus",
-      },
-      answer: "b",
-    },
-    {
-      index: 3,
-      question: 'Who wrote "Romeo and Juliet"?',
-      options: {
-        a: "Charles Dickens",
-        b: "William Shakespeare",
-        c: "Jane Austen",
-        d: "Mark Twain",
-      },
-      answer: "b",
-    },
-    {
-      index: 4,
-      question: "What is the largest mammal in the world?",
-      options: {
-        a: "Elephant",
-        b: "Blue Whale",
-        c: "Giraffe",
-        d: "Hippopotamus",
-      },
-      answer: "b",
-    },
-    {
-      index: 5,
-      question:
-        "Which programming language is known for its flexibility and readability?",
-      options: {
-        a: "Java",
-        b: "Python",
-        c: "C++",
-        d: "JavaScript",
-      },
-      answer: "b",
-    },
-    {
-      index: 6,
-      question: "What is the largest ocean on Earth?",
-      options: {
-        a: "Atlantic Ocean",
-        b: "Indian Ocean",
-        c: "Southern Ocean",
-        d: "Pacific Ocean",
-      },
-      answer: "d",
-    },
-    {
-      index: 7,
-      question: 'Who is known as the "Father of Computer Science"?',
-      options: {
-        a: "Alan Turing",
-        b: "Bill Gates",
-        c: "Steve Jobs",
-        d: "Mark Zuckerberg",
-      },
-      answer: "a",
-    },
-    {
-      index: 8,
-      question:
-        "Which famous scientist developed the theory of general relativity?",
-      options: {
-        a: "Isaac Newton",
-        b: "Galileo Galilei",
-        c: "Albert Einstein",
-        d: "Stephen Hawking",
-      },
-      answer: "c",
-    },
-    {
-      index: 9,
-      question: "What is the chemical symbol for water?",
-      options: {
-        a: "O2",
-        b: "CO2",
-        c: "H2O",
-        d: "N2",
-      },
-      answer: "c",
-    },
-    {
-      index: 10,
-      question: "In which year did the Titanic sink?",
-      options: {
-        a: "1905",
-        b: "1912",
-        c: "1920",
-        d: "1931",
-      },
-      answer: "b",
-    },
-  ];
 
   const [questions, setQuestions] = useState(questionData);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -157,7 +164,7 @@ const Quiz = () => {
         id="quizContainer"
         className=" bc flex flex-col items-center justify-center rounded-[50px] h-[80vh] w-[50vw] backdrop-blur-lg"
       >
-        <div className="text-white h-[70%] w-[50%] rounded-xl p-8 shadow-md transform transition-all duration-500">
+        <div className="text-white h-[70%] w-3/4 bc rounded-xl p-8 shadow-md transform transition-all duration-500">
           <h1 className="text-3xl font-bold mb-6">Quiz</h1>
           <h2 className="text-xl font-semibold mb-4">
             Question {currentQuestion.index}
@@ -184,11 +191,13 @@ const Quiz = () => {
     return (
       <div
         id="quizContainer"
-        className=" bc flex flex-col  items-center justify-center p-5 rounded-[50px]  h-[80vh] w-[50vw] backdrop-blur-lg"
+        className=" flex flex-col  items-center justify-center p-5 rounded-[50px]  h-[80vh] w-[50vw] backdrop-blur-lg"
       >
-        <div className="bg-transparent rounded-xl  overflow-auto  p-8 shadow-md transform transition-all duration-500">
+        <div className="bg-transparent rounded-xl w-3/4 bc  overflow-auto  p-8 shadow-md transform transition-all duration-500">
           <h1 className="text-3xl font-bold mb-6 text-white">Quiz Result</h1>
-          <p className="text-lg mb-4 text-white">Your score: {score.toFixed(2)}%</p>
+          <p className="text-lg mb-4 text-white">
+            Your score: {score.toFixed(2)}%
+          </p>
           <div className="text-lg mb-4">
             {answers.map((answer) => {
               const question = questions.find((q) => q.index === answer.index);
@@ -220,12 +229,22 @@ const Quiz = () => {
               );
             })}
           </div>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
-            onClick={restartQuiz}
-          >
-            Restart Quiz
-          </button>
+          <div className="flex flex-col gap-2">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
+              onClick={restartQuiz}
+            >
+              Restart Quiz
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
+              onClick={() => {
+                navigate(`/student/${roleID}/pathway`);
+              }}
+            >
+              Get Personalised pathway
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ import React from "react";
 const QuizQuestions = ({ questions }) => {
   console.log(questions);
   return (
+    // <></>
     <div className="container mx-auto p-4  backdrop-blur-2xl">
       <h2 className="text-2xl font-semibold mb-4 text-white">Questions List</h2>
       <ul className="space-y-4">

@@ -9,11 +9,12 @@ import { Avatar, fabClasses } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SidebarList from "../elements/sidebarList";
 import VideosList from "../elements/VideoList";
-import { uselocalStore } from "../store/store";
+import { useUserData, uselocalStore } from "../store/store";
 import LoginRole from "../elements/LoginRole";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import msgTune from "../assets/notification.mp3";
+import Survey from "./Survey";
 
 const socket = io.connect("http://localhost:4000");
 
@@ -49,15 +50,21 @@ const StudentHome = () => {
     setUserLogginIn,
     joinClassOpen,
   } = uselocalStore();
+  const { decodedData } = useUserData();
+  const { surveyGiven } = decodedData(localStorage.getItem("token"));
+  const [survey, setSurvey] = useState(surveyGiven);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setUserLogginIn(false);
     }, 5000);
+    console.log(decodedData(localStorage.getItem("token")));
 
     // Clear the timeout to avoid memory leaks
     return () => clearTimeout(timeout);
   }, []); // Empty dependency array ensures this effect runs only once
+
+  // if (!survey) return <Survey />;
 
   if (userLoggingIn) return <LoginRole />;
   return (

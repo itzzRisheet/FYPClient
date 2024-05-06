@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { addQuiz } from "../helper/helper";
 import { uselocalStore } from "../store/store";
+import { useParams } from "react-router-dom";
 
 const AddQuizBox = ({ lecID }) => {
+  const { topicID} = useParams();
   const { setPopupMsg, setPopupOpen, setAddQuizBoxOpen } = uselocalStore();
   const [questions, setQuestions] = useState([]);
   const [alert, setAlert] = useState(false);
@@ -24,6 +26,8 @@ const AddQuizBox = ({ lecID }) => {
           <div className="flex flex-col gap-2">
             <title className="text-3xl">Oops!!!</title>
             <p className="text-md">Quiz already exist</p>
+            <p className="text-md">You sure you want to replace the last added Quiz</p>
+
           </div>
 
           <div className="flex gap-4">
@@ -59,8 +63,7 @@ const AddQuizBox = ({ lecID }) => {
   };
 
   const sendQuiz = async (forced = false) => {
-    console.log(forced);
-    await addQuiz(questions, lecID, forced)
+    await addQuiz(questions, topicID, forced)
       .then((data) => {
         if (data.status === 200) {
           setPopupMsg("Added Quiz successfully!!!!");

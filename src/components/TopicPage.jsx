@@ -52,7 +52,7 @@ const TopicPage = () => {
   } = uselocalStore();
 
   const { topicID } = useParams();
-  const { topicData, setTopicData } = useTopicData();
+  const [topicData, setTopicData] = useState({});
   const [watchedLectures, setWatchedLectures] = useState({});
   const [lectureCompleteStatus, setLecturesCompleteStatus] = useState(
     Lectures.length * 0.99
@@ -65,7 +65,7 @@ const TopicPage = () => {
   useEffect(() => {
     const getdata = async () => {
       const { data } = await getLectures(topicID);
-      console.log(data);
+      await setTopicData(data.data);
       await setLectures(data.data.lectures);
       await setCurrentLec(Lectures[0]);
     };
@@ -118,7 +118,6 @@ const TopicPage = () => {
     }
     setPopupOpen(true);
   }, [lectureCompleteStatus]);
-  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     console.log(watchedLectures);
@@ -252,16 +251,12 @@ const TopicPage = () => {
     );
   };
 
-  useEffect(() => {
-    setTopicData(topicID);
-  }, []);
-
   if (role)
     return (
       <div className="relative">
         {QuizOpen && (
           <div className="absolute top-0 left-0 h-full w-full z-50 flex flex-col justify-center items-center ">
-            <Quiz />
+            <Quiz questionData={topicData.Quiz[0].questions} />
           </div>
         )}
         <div
@@ -394,13 +389,22 @@ const TopicPage = () => {
           </div>
         </div>
       )}
-      {quizQuestion && Object.keys(currLecT).length && currLecT.Quiz.length ? (
+      {quizQuestion && topicData.Quiz ? (
         <div
           ref={quizContainer}
           className="absolute z-50 top-0 left-0 flex flex-col h-screen w-screen justify-center items-center"
         >
           <div id="quizCont" className=" w-[70%] h-[80%]  backdrop-blur-xl">
-            <QuizQuestions questions={currLecT?.Quiz[0].questions} />
+            <QuizQuestions questions={topicData.Quiz[0].questions} />
+            <button
+              className="bg-blue-700  text-white py-2 px-4 rounded-3xl hover:bg-blue-900 my-8 duration-200"
+              onClick={() => {
+                setQuizQuestion(false);
+                setAddQuizBoxOpen(true);
+              }}
+            >
+              Replace
+            </button>
           </div>
         </div>
       ) : (
@@ -419,17 +423,31 @@ const TopicPage = () => {
       <div
         className={`h-screen relativ py-[10vh] w-screen  flex flex-col items-center justify-center bg-HomeBG-main ${addLectureOpen || addQuizBoxOpen ? "brightness-[20%]" : "brightness-100"}`}
       >
-        <div
-          className="text-white  bg-blue-700 hover:bg-blue-900 transition-all duration-300 px-4 py-2 my-8 rounded-2xl cursor-pointer"
-          onClick={() => {
-            setAddLectureOpen(true);
-          }}
-        >
-          <button className="focus:outline-none">
+        <div className="text-white flex gap-4   ">
+          <button
+            className="focus:outline-none  bg-blue-700 hover:bg-blue-900 transition-all duration-300 px-4 py-2 my-8 rounded-2xl cursor-pointer"
+            onClick={() => {
+              setAddLectureOpen(true);
+            }}
+          >
             Add Lecture <FontAwesomeIcon icon={faPlus} />
           </button>
+          <button
+            className="bg-blue-700 py-2 px-4 rounded-3xl hover:bg-blue-900 my-8 duration-200"
+            onClick={() => {
+              console.log(topicData);
+              if (topicData.Quiz) {
+                setQuizQuestion(true);
+              } else {
+                setAddQuizBoxOpen(true);
+              }
+            }}
+          >
+            {topicData.Quiz ? "Show Quiz" : "Add Quiz"}
+          </button>
         </div>
-        <div className="grid grid-cols-1  h-[80%] overflow-auto md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+
+        <div className="grid grid-cols-1 border-x-2 border-transparent transition-all duration-200 hover:border-white px-5  h-[80%] overflow-auto md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
           {Lectures.map((lecture) => (
             <div
               key={lecture._id}
@@ -489,14 +507,7 @@ const TopicPage = () => {
             ) : (
               ""
             )}
-            <button
-              className="bg-blue-500 py-2 px-4 rounded-3xl hover:bg-blue-800 translate-x-0 duration-200"
-              onClick={() => {
-                setAddQuizBoxOpen(true);
-              }}
-            >
-              Add quiz
-            </button>
+
             <button
               className="bg-blue-500 py-2 px-4 rounded-3xl hover:bg-blue-800 translate-x-0 duration-200"
               onClick={() => {

@@ -8,6 +8,7 @@ import ClassPage from "./components/classPage";
 import TopicPage from "./components/TopicPage";
 import TeacherHome from "./components/teachersHome";
 import Temp from "./elements/Temp";
+import Pathway from "./components/Pathway";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/topics/:topicID",
         element: <TopicPage />,
+      },
+      {
+        path: "/student/:roleID/pathway",
+        element: <Pathway />,
       },
       {
         path: "/temp",

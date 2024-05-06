@@ -31,7 +31,7 @@ const Layout = () => {
     setTranscriptOpen,
     setResourcesOpen,
     setAddLectureOpen,
-    addQuizBoxOpen,
+    setAddQuizBoxOpen,
     alertMsg,
     confirmation,
     alertBox,
@@ -49,7 +49,7 @@ const Layout = () => {
         setTranscriptOpen(false);
         setResourcesOpen(false);
         setAddLectureOpen(false);
-        addQuizBoxOpen(false);
+        setAddQuizBoxOpen(false)
       }
     };
 
