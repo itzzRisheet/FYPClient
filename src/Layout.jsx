@@ -49,7 +49,7 @@ const Layout = () => {
         setTranscriptOpen(false);
         setResourcesOpen(false);
         setAddLectureOpen(false);
-        setAddQuizBoxOpen(false)
+        setAddQuizBoxOpen(false);
       }
     };
 
@@ -112,28 +112,32 @@ const Layout = () => {
       <ToastContainer />
       <ConditionalNavbar />
       <Outlet />
-      <div
-        className={`chat-Icon absolute right-10 bottom-10 ${addTopicOpen || addClassOpen ? "brightness-[10%]" : ""} z-[49] p-2`}
-        onClick={() => {
-          setChatOpen(true);
-        }}
-      >
-        {chatOpen ? (
-          <ChatBOT />
-        ) : (
-          <FontAwesomeIcon
-            icon={faRobot}
-            bounce={bounceEffect}
-            className="text-white text-4xl cursor-pointer hover:text-emerald-300 transition-all duration-300"
-            onMouseEnter={() => {
-              setBounceEffect(false);
-            }}
-            onMouseLeave={() => {
-              setBounceEffect(true);
-            }}
-          />
-        )}
-      </div>
+      {localStorage.getItem("token") ? (
+        <div
+          className={`chat-Icon absolute right-10 bottom-10 ${addTopicOpen || addClassOpen ? "brightness-[10%]" : ""} z-[49] p-2`}
+          onClick={() => {
+            setChatOpen(true);
+          }}
+        >
+          {chatOpen ? (
+            <ChatBOT />
+          ) : (
+            <FontAwesomeIcon
+              icon={faRobot}
+              bounce={bounceEffect}
+              className="text-white text-4xl cursor-pointer hover:text-emerald-300 transition-all duration-300"
+              onMouseEnter={() => {
+                setBounceEffect(false);
+              }}
+              onMouseLeave={() => {
+                setBounceEffect(true);
+              }}
+            />
+          )}
+        </div>
+      ) : (
+        ""
+      )}
       <Snackbar
         open={PopupOpen}
         autoHideDuration={700}

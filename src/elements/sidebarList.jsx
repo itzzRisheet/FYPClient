@@ -61,21 +61,24 @@ const SidebarList = () => {
         >
           <ListItemButton onClick={handleClick}>
             <ListItemIcon>
-              <FontAwesomeIcon icon={faComputer} className="text-[#222831]" />
+              <FontAwesomeIcon icon={faComputer} className="text-gray-300" />
             </ListItemIcon>
             <ListItemText
               primary={role ? "Enrolls" : "Classes associated"}
-              className="text-[#222831]"
+              className="text-gray-300"
+              sx={{
+                fontWeight: "700",
+              }}
             />
 
             {open ? (
-              <FontAwesomeIcon icon={faAngleUp} className="text-[#222831]" />
+              <FontAwesomeIcon icon={faAngleUp} className="text-gray-300" />
             ) : (
-              <FontAwesomeIcon icon={faAngleDown} className="text-[#222831]" />
+              <FontAwesomeIcon icon={faAngleDown} className="text-gray-300" />
             )}
           </ListItemButton>
           <Collapse in={open} timeout={"auto"} unmountOnExit>
-            <List component="div" disablePadding className="text-[#222831]">
+            <List component="div" disablePadding className="text-gray-300">
               {classlist.map((cls) => {
                 return (
                   <ListItemButton

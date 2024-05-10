@@ -11,11 +11,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, List, fabClasses } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import SidebarList from "../elements/sidebarList";
 import { useParams } from "react-router-dom";
-import { getLectures, getTopicDetails } from "../helper/helper";
-import { useTopicData, uselocalStore } from "../store/store";
-import AddClassBox from "../elements/addClassbox";
+import { getLectures } from "../helper/helper";
+import { uselocalStore } from "../store/store";
 import ReactPlayer from "react-player/youtube";
 import Quiz from "../elements/Quiz";
 import axios from "axios";
@@ -67,10 +65,13 @@ const TopicPage = () => {
       const { data } = await getLectures(topicID);
       await setTopicData(data.data);
       await setLectures(data.data.lectures);
-      await setCurrentLec(Lectures[0]);
     };
     getdata();
   }, []);
+
+  useEffect(() => {
+    setCurrentLec(Lectures[0]);
+  }, [Lectures]);
 
   useGSAP(() => {
     gsap.fromTo("#currentLecT", { x: 5000 }, { x: 0, duration: 0.2 });
@@ -110,17 +111,16 @@ const TopicPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (lectureCompleteStatus >= 0.99 * Lectures.length) {
-      setPopupMsg(lectureCompleteStatus, "  Lectures completed successfully");
-    } else {
-      setPopupMsg(lectureCompleteStatus, "Lectures completed!!!");
-    }
-    setPopupOpen(true);
-  }, [lectureCompleteStatus]);
+  // useEffect(() => {
+  //   if (lectureCompleteStatus >= 0.99 * Lectures.length) {
+  //     setPopupMsg(lectureCompleteStatus, "  Lectures completed successfully");
+  //   } else {
+  //     setPopupMsg(lectureCompleteStatus, "Lectures completed!!!");
+  //   }
+  //   setPopupOpen(true);
+  // }, [lectureCompleteStatus]);
 
   useEffect(() => {
-    console.log(watchedLectures);
     const totalLectures = Lectures.length;
     const wlLen = Object.keys(watchedLectures).length;
 
@@ -254,10 +254,15 @@ const TopicPage = () => {
   if (role)
     return (
       <div className="relative">
-        {QuizOpen && (
+        {QuizOpen && topicData.Quiz ? (
           <div className="absolute top-0 left-0 h-full w-full z-50 flex flex-col justify-center items-center ">
-            <Quiz questionData={topicData.Quiz[0].questions} />
+            <Quiz
+              questionData={topicData.Quiz[0].questions}
+              quizID={topicData.Quiz[0]._id}
+            />
           </div>
+        ) : (
+          ""
         )}
         <div
           className={`h-screen w-screen flex py-[10vh] flex-col bg-HomeBG-main ${QuizOpen ? "brightness-[5%]" : "brightness-100"}`}
@@ -395,7 +400,7 @@ const TopicPage = () => {
           className="absolute z-50 top-0 left-0 flex flex-col h-screen w-screen justify-center items-center"
         >
           <div id="quizCont" className=" w-[70%] h-[80%]  backdrop-blur-xl">
-            <QuizQuestions questions={topicData.Quiz[0].questions} />
+            <QuizQuestions questions={topicData?.Quiz[0].questions} />
             <button
               className="bg-blue-700  text-white py-2 px-4 rounded-3xl hover:bg-blue-900 my-8 duration-200"
               onClick={() => {

@@ -165,3 +165,19 @@ export async function addQuiz(questions, topicID, forced) {
     throw error;
   }
 }
+
+export async function attemptQuiz(sid, quizID, quizScore) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/api/students/${sid}/attemptQuiz`,
+      {
+        quizID,
+        quizScore,
+      }
+    );
+    console.log(response);
+    return { data: response.data, status: response.status };
+  } catch (error) {
+    throw error;
+  }
+}

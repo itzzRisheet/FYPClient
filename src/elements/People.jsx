@@ -26,7 +26,7 @@ const People = () => {
   const { decodedData } = useUserData();
   const [socket, setSocket] = useState(null);
 
-  const { roleID } = decodedData(localStorage.getItem("token"));
+  const { role } = decodedData(localStorage.getItem("token"));
 
   useEffect(() => {
     const newSocket = io.connect("http://localhost:4000");
@@ -66,9 +66,8 @@ const People = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { people, requests } = await getPeople(classID);
-        console.log(people);
-        setPeople(people);
+        const { people, requests, names } = await getPeople(classID);
+        await setPeople(names);
         setRequests(requests);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -91,64 +90,84 @@ const People = () => {
           "No one's here yet"
         </div>
       ) : (
-        <ul>
+        <ul className="w-full flex flex-col gap-4 p-4 items-center">
+          <span>{peopleLen} students joined</span>
           {people.map((person) => {
-            return <li key={person.ID}>{person.name}</li>;
+            return (
+              <li
+                key={person.id}
+                className="h-[10%] flex justify-between items-center bg-gray-900 w-full rounded-2xl py-2 px-4"
+              >
+                <div className="flex gap-2 items-center">
+                  <Avatar />
+                  <div>{person.fullname}</div>
+                </div>
+                {/* {!role && ( */}
+                <div>
+                  <button className="text-red-600 transition-all duration-200 px-4 py-2 rounded-2xl cursor-pointer hover:text-red-800">
+                    remove
+                  </button>
+                </div>
+                {/* )} */}
+              </li>
+            );
           })}
         </ul>
       )}
-      <div
-        className={`absolute z-50 right-10 requests  transition-all  duration-200 flex  justify-center h-full  ${showRequests ? "w-[20vw] items-center rounded-2xl " : "  w-[4rem] h-[4rem] rounded-full"}   `}
-        onMouseEnter={() => {
-          setShowRequests(true);
-        }}
-        onMouseLeave={() => {
-          setShowRequests(false);
-        }}
-      >
-        {!showRequests && <RequestAvatar msgCount={requests.length} />}
-        {showRequests && (
-          <ul className="p-4  w-full h-full">
-            {!reqLen ? (
-              <li>"0 requests found"</li>
-            ) : (
-              requests.map((req) => {
-                return (
-                  <li className="flex border-[0.1px] border-white p-2 justify-between  items-center rounded-xl bg-black">
-                    {req.studentData["name"]}{" "}
-                    <span className="flex items-center gap-2">
-                      <FontAwesomeIcon
-                        icon={faCheck}
-                        className="hover:scale-110 bg-green-400 p-1 rounded-md cursor-pointer transition-all duration-300"
-                        onClick={async () => {
-                          const { status } = await acceptRequest(
-                            req._id,
-                            classID,
-                            req.studentID
-                          );
-                          if (status === 200) {
-                            const { people, requests } =
-                              await getPeople(classID);
-                            setPeople(people);
-                            setRequests(requests);
-                          }
-                        }}
-                      />
-                      <FontAwesomeIcon
-                        icon={faClose}
-                        className="hover:scale-110 bg-red-400 p-1 rounded-md cursor-pointer transition-all duration-300"
-                        onClick={() => {
-                          cancelRequest(req._id, classID, req.studentID);
-                        }}
-                      />
-                    </span>
-                  </li>
-                );
-              })
-            )}
-          </ul>
-        )}
-      </div>
+      {!role && (
+        <div
+          className={`absolute z-10 top-[10vh]  right-10 requests  transition-all  duration-200 flex  justify-center  ${showRequests ? "w-[20vw] h-auto items-center rounded-2xl border-[0.3px] border-gray-500 " : "  w-[4rem] h-[4rem] rounded-full"}   `}
+          onMouseEnter={() => {
+            setShowRequests(true);
+          }}
+          onMouseLeave={() => {
+            setShowRequests(false);
+          }}
+        >
+          {!showRequests && <RequestAvatar msgCount={requests.length} />}
+          {showRequests && (
+            <ul className="p-4  w-full h-full">
+              {!reqLen ? (
+                <li>"0 requests found"</li>
+              ) : (
+                requests.map((req) => {
+                  return (
+                    <li className="flex border-[0.1px] border-white p-2 justify-between  items-center rounded-xl bg-black">
+                      {req.studentData["name"]}{" "}
+                      <span className="flex items-center gap-2">
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          className="hover:scale-110 bg-green-400 p-1 rounded-md cursor-pointer transition-all duration-300"
+                          onClick={async () => {
+                            const { status } = await acceptRequest(
+                              req._id,
+                              classID,
+                              req.studentID
+                            );
+                            if (status === 200) {
+                              const { people, requests } =
+                                await getPeople(classID);
+                              setPeople(people);
+                              setRequests(requests);
+                            }
+                          }}
+                        />
+                        <FontAwesomeIcon
+                          icon={faClose}
+                          className="hover:scale-110 bg-red-400 p-1 rounded-md cursor-pointer transition-all duration-300"
+                          onClick={() => {
+                            cancelRequest(req._id, classID, req.studentID);
+                          }}
+                        />
+                      </span>
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 };

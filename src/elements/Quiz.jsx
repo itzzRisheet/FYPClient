@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useUserData, uselocalStore } from "../store/store";
 import { useNavigate } from "react-router-dom";
+import { attemptQuiz } from "../helper/helper.js";
 
 // const questionData = [
 //   {
@@ -119,12 +120,11 @@ import { useNavigate } from "react-router-dom";
 //   },
 // ];
 
-const Quiz = ({ questionData }) => {
-  const { QuizOpen } = uselocalStore();
+const Quiz = ({ questionData, quizID }) => {
+  const { QuizOpen, setQuizOpen } = uselocalStore();
   const { decodedData } = useUserData();
 
   const { roleID } = decodedData(localStorage.getItem("token"));
-  console.log(roleID);
 
   const navigate = useNavigate();
 
@@ -156,6 +156,17 @@ const Quiz = ({ questionData }) => {
     setCurrentQuestionIndex(0);
     setAnswers([]);
   };
+
+  useEffect(() => {
+    const sendQuiz = async () => {
+      if (currentQuestionIndex === questions.length) {
+        const score = calculateScore();
+        await attemptQuiz(roleID, quizID, score);
+
+      }
+    };
+    sendQuiz();
+  }, [currentQuestionIndex]);
 
   if (currentQuestionIndex < questions.length) {
     const currentQuestion = questions[currentQuestionIndex];
@@ -240,6 +251,7 @@ const Quiz = ({ questionData }) => {
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
               onClick={() => {
                 navigate(`/student/${roleID}/pathway`);
+                setQuizOpen(false);
               }}
             >
               Get Personalised pathway
