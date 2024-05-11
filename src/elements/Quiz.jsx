@@ -121,7 +121,7 @@ import { attemptQuiz } from "../helper/helper.js";
 // ];
 
 const Quiz = ({ questionData, quizID }) => {
-  const { QuizOpen, setQuizOpen } = uselocalStore();
+  const { QuizOpen, topicPrompt, lecPrompt, setQuizOpen } = uselocalStore();
   const { decodedData } = useUserData();
 
   const { roleID } = decodedData(localStorage.getItem("token"));
@@ -135,6 +135,7 @@ const Quiz = ({ questionData, quizID }) => {
   const [questions, setQuestions] = useState(questionData);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const wrongQuestions = [];
 
   const handleAnswer = (selectedOption) => {
     const currentQuestion = questions[currentQuestionIndex];
@@ -162,7 +163,6 @@ const Quiz = ({ questionData, quizID }) => {
       if (currentQuestionIndex === questions.length) {
         const score = calculateScore();
         await attemptQuiz(roleID, quizID, score);
-
       }
     };
     sendQuiz();
@@ -213,6 +213,9 @@ const Quiz = ({ questionData, quizID }) => {
             {answers.map((answer) => {
               const question = questions.find((q) => q.index === answer.index);
               const isCorrect = answer.isCorrect;
+              if (!isCorrect) {
+                wrongQuestions.push(question.question);
+              }
               const studentAnswer = question.options[answer.selectedOption];
               const correctAnswer = question.options[question.answer];
               return (
@@ -252,6 +255,16 @@ const Quiz = ({ questionData, quizID }) => {
               onClick={() => {
                 navigate(`/student/${roleID}/pathway`);
                 setQuizOpen(false);
+
+                let pmt = `
+                Topic name : ${topicPrompt.title}
+                Topic description : ${topicPrompt.desc}
+                Lecture titles are : 
+                ${lecPrompt.map((lec) => lec)}
+                Questions are : 
+                ${wrongQuestions.map((q) => q)}
+                `;
+                console.log(pmt);
               }}
             >
               Get Personalised pathway

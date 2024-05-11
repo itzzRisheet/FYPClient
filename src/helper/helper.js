@@ -181,3 +181,37 @@ export async function attemptQuiz(sid, quizID, quizScore) {
     throw error;
   }
 }
+
+export async function submitSurvey(sid, surveyData, personalData) {
+  try {
+    const survey = {
+      education_level: surveyData.educationLevels,
+      field_of_study: surveyData.fieldOfStudy,
+      skills: surveyData.skills,
+      interests: surveyData.interests,
+      preferred_technologies: surveyData.preferredTechnologies,
+      core_subjects: surveyData.coreSubjects,
+      specialization_subjects: surveyData.specializationSubjects,
+      carrer_roles: surveyData.professionalRoles,
+      ...personalData,
+    };
+    const response = await axios.post(
+      `${baseURL}/api/students/${sid}/submitSurvey`
+    );
+    const pyResponse = await axios.post(
+      `https://survey-system-api.onrender.com/surveyData`
+    );
+
+    console.log(response);
+    console.log(pyResponse);
+
+    return {
+      data: response.data,
+      status: response.status,
+      pythonData: pyResponse.data,
+      pythonStatus: pyResponse.status,
+    };
+  } catch (error) {
+    throw error;
+  }
+}

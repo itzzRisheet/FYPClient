@@ -4,8 +4,20 @@ import { create } from "zustand";
 import { getClassDetails, getClasses, getTopicDetails } from "../helper/helper";
 
 export const uselocalStore = create((set) => ({
+  topicPrompt: {},
+  setTopicPrompt: (val) => {
+    set({ topicPrompt: val });
+  },
+  lecPrompt: [],
+  setLecPrompt: (values) => {
+    set({ lecPrompt: [...values] });
+  },
   userLoggingIn: true,
   responseMSG: "",
+  surveyGiven: false,
+  setSurveyGiven: (val) => {
+    set({ surveyGiven: val });
+  },
   setResponseMSG: (msg) => {
     set({ responseMSG: msg });
   },

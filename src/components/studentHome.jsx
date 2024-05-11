@@ -49,22 +49,24 @@ const StudentHome = () => {
     userLoggingIn,
     setUserLogginIn,
     joinClassOpen,
+    surveyGiven,
+    setSurveyGiven,
   } = uselocalStore();
   const { decodedData } = useUserData();
-  const { surveyGiven } = decodedData(localStorage.getItem("token"));
-  const [survey, setSurvey] = useState(surveyGiven);
+  useEffect(() => {
+    setSurveyGiven(decodedData(localStorage.getItem("token")));
+  }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setUserLogginIn(false);
     }, 5000);
-    console.log(decodedData(localStorage.getItem("token")));
 
     // Clear the timeout to avoid memory leaks
     return () => clearTimeout(timeout);
   }, []); // Empty dependency array ensures this effect runs only once
 
-  // if (!survey) return <Survey />;
+  if (!surveyGiven) return <Survey />;
 
   if (userLoggingIn) return <LoginRole />;
   return (

@@ -47,6 +47,10 @@ const TopicPage = () => {
     addQuizBoxOpen,
     setAddResources,
     addResourcesBox,
+    topicPrompt,
+    setTopicPrompt,
+    lecPrompt,
+    setLecPrompt,
   } = uselocalStore();
 
   const { topicID } = useParams();
@@ -64,7 +68,14 @@ const TopicPage = () => {
     const getdata = async () => {
       const { data } = await getLectures(topicID);
       await setTopicData(data.data);
+
       await setLectures(data.data.lectures);
+      let lecs = [];
+      let lecdata = data.data.lectures;
+      lecdata.map((lec) => {
+        lecs.push(lec.title);
+      });
+      setLecPrompt(lecs);
     };
     getdata();
   }, []);
@@ -72,6 +83,10 @@ const TopicPage = () => {
   useEffect(() => {
     setCurrentLec(Lectures[0]);
   }, [Lectures]);
+  useEffect(() => {
+    console.log(topicData);
+    setTopicPrompt({ title: topicData.title, desc: topicData.description });
+  }, [topicData]);
 
   useGSAP(() => {
     gsap.fromTo("#currentLecT", { x: 5000 }, { x: 0, duration: 0.2 });

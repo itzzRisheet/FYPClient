@@ -33,7 +33,7 @@ const Pathway = ({ videoData }) => {
     );
   };
 
-  const VideoCard = () => {
+  const VideoCard = ({ title, desc, link, recommendedFor }) => {
     return (
       <div className="flex gap-4 w-full py-2 border-gray-700 border-b-2 h-[200px] mb-4 overflow-hidden">
         <div className="h-full w-1/6  flex flex-col justify-between">
@@ -49,20 +49,12 @@ const Pathway = ({ videoData }) => {
         </div>
         <div className="desc w-5/6 flex flex-col justify-between py-2 text-white ">
           <div>
-            <div className="text-xl text-gray-200">
-              Introduction to Machine learning
-            </div>
-            <div className="text-lg text-gray-400">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum
-              dolores aperiam eaque. Voluptatum, a eum numquam maiores sed
-              officiis quam. Dignissimos possimus harum eos quia minima nemo
-              atque quibusdam qui nam ipsam, eius facilis dolorem! Aperiam
-              similique quasi debitis! Suscipit asperiores rerum nihil soluta
-              sequi voluptates aliquam, distinctio amet facere!
-            </div>
+            <div className="text-xl text-gray-200">{title}</div>
+            <div className="text-lg text-gray-400">{desc}</div>
           </div>
           <div className="text-yellow-700 justify-self-end">
-            Recommended for <span className="text-yellow-400"> topic </span>
+            Recommended for{" "}
+            <span className="text-yellow-400"> {recommendedFor} </span>
           </div>
         </div>
       </div>
@@ -75,16 +67,30 @@ const Pathway = ({ videoData }) => {
         className={`h-screen w-screen flex items-center pt-[10vh] flex-col bg-HomeBG-main `}
       >
         <div className="h-full w-2/3  px-8 py-4  overflow-auto">
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
+          <VideoCard
+            title="Introduction to HTML"
+            desc="Learn the basics of HTML, including tags, elements, and structure."
+            link="https://www.example.com/html-intro"
+            recommendedFor="HTML Beginners"
+          />
+          <VideoCard
+            title="CSS Fundamentals"
+            desc="Explore the fundamentals of CSS, including selectors, properties, and styling."
+            link="https://www.example.com/css-fundamentals"
+            recommendedFor="CSS Beginners"
+          />
+          <VideoCard
+            title="Responsive Web Design"
+            desc="Discover techniques for creating responsive websites using HTML and CSS."
+            link="https://www.example.com/responsive-web-design"
+            recommendedFor="Intermediate Web Developers"
+          />
+          <VideoCard
+            title="CSS Grid Layout"
+            desc="Master CSS Grid Layout and learn how to create complex web layouts."
+            link="https://www.example.com/css-grid-layout"
+            recommendedFor="Advanced CSS Users"
+          />
         </div>
       </div>
     </div>

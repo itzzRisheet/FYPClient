@@ -1,6 +1,118 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
+import { submitSurvey } from "../helper/helper";
+import { useUserData, uselocalStore } from "../store/store";
+
+const educationLevels = [
+  "High School Diploma",
+  "Associate Degree",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctorate or Professional Degree",
+];
+
+const fieldsOfStudy = [
+  "Computer Science",
+  "Information Technology",
+  "Software Engineering",
+  "Electrical Engineering",
+  "Mechanical Engineering",
+  "Civil Engineering",
+  "Chemical Engineering",
+  "Biomedical Engineering",
+  "Mathematics",
+  "Physics",
+  "Biology",
+  "Chemistry",
+  "Business Administration",
+  "Finance",
+  "Marketing",
+  "Psychology",
+  "Sociology",
+  "Education",
+  "English Literature",
+  "History",
+  "Political Science",
+  "Art",
+  "Music",
+];
+
+const skills = [
+  "Programming",
+  "Web Development",
+  "Mobile App Development",
+  "Data Analysis",
+  "Machine Learning",
+  "Artificial Intelligence",
+  "Cybersecurity",
+  "Network Administration",
+  "Database Management",
+  "Cloud Computing",
+  "DevOps",
+  "UI/UX Design",
+  "Project Management",
+  "Communication",
+  "Problem Solving",
+  "Critical Thinking",
+  "Time Management",
+  "Leadership",
+  "Teamwork",
+];
+
+const interests = [
+  "Technology",
+  "Science",
+  "Engineering",
+  "Mathematics",
+  "Art",
+  "Music",
+  "Literature",
+  "History",
+  "Philosophy",
+  "Sports",
+  "Travel",
+  "Cooking",
+  "Gaming",
+  "Fashion",
+  "Fitness",
+  "Health",
+  "Environment",
+];
+
+const preferredTechnologies = [
+  "Java",
+  "Python",
+  "JavaScript",
+  "C#",
+  "C++",
+  "Ruby",
+  "PHP",
+  "Swift",
+  "Kotlin",
+  "HTML",
+  "CSS",
+  "React",
+  "Angular",
+  "Vue.js",
+  "Node.js",
+  "Express.js",
+  "Django",
+  "Flask",
+  "ASP.NET",
+  "Unity",
+  "Unreal Engine",
+  "TensorFlow",
+  "PyTorch",
+  "Docker",
+  "Kubernetes",
+  "AWS",
+  "Azure",
+  "Google Cloud Platform",
+  "MongoDB",
+  "MySQL",
+  "PostgreSQL",
+];
 
 const professionalRoles = [
   "Full Stack Dev (FrontEnd, BackEnd)",
@@ -63,16 +175,26 @@ const coreSubjects = [
 
 const Survey = () => {
   const [currIndex, setCurrIndex] = useState(-1);
-  const [selectedProfessionalRoles, setSelectedProfessionalRoles] = useState(
-    []
-  );
 
   const [selectedFields, setSelectedFields] = useState({
     coreSubjects: [],
     professionalRoles: [],
     specializationSubjects: [],
+    educationLevels: [],
+    fieldOfStudy: [],
+    skills: [],
+    interests: [],
+    preferredTechnologies: [],
   });
 
+  const { setSurveyGiven, surveyGiven } = uselocalStore();
+  const { decodedData } = useUserData();
+  const data = decodedData(localStorage.getItem("token"));
+  const personalData = {
+    user_id: data.roleID,
+    age: data.age,
+    gender: data.gender,
+  };
 
   const PrintSurveyFilters = () => {
     if (currIndex === -1) {
@@ -112,9 +234,24 @@ const Survey = () => {
     } else if (currIndex === 1) {
       rolename = "professionalRoles";
       roleType = professionalRoles;
-    } else {
+    } else if (currIndex === 2) {
       rolename = "specializationSubjects";
       roleType = specializationSubjects;
+    } else if (currIndex === 3) {
+      rolename = "skills";
+      roleType = skills;
+    } else if (currIndex === 4) {
+      rolename = "preferredTechnologies";
+      roleType = preferredTechnologies;
+    } else if (currIndex === 5) {
+      rolename = "interests";
+      roleType = interests;
+    } else if (currIndex === 6) {
+      rolename = "educationLevels";
+      roleType = educationLevels;
+    } else if (currIndex === 7) {
+      rolename = "fieldOfStudy";
+      roleType = fieldsOfStudy;
     }
 
     return (
@@ -126,14 +263,26 @@ const Survey = () => {
               ? "Professional Roles"
               : currIndex === 2
                 ? "Specialization Subjects"
-                : ""}
+                : currIndex === 3
+                  ? "skills"
+                  : currIndex === 4
+                    ? "Preferred Technologies"
+                    : currIndex === 5
+                      ? "Interests"
+                      : currIndex === 6
+                        ? "Educational Levels"
+                        : currIndex === 7
+                          ? "Field of study"
+                          : ""}
         </h1>
         <ul className={`flex flex-wrap gap-5 `}>
           {roleType.map((role) => {
             return (
               <li
-                className={`text-black flex gap-2 cursor-pointer  font-bold px-4 py-2 rounded-xl  ${selectedFields[rolename].includes(role) ? "bg-green-700" : "bg-emerald-300 hove"}`}
+                className={`text-black flex gap-2 cursor-pointer  font-bold px-4 py-2 rounded-xl  ${selectedFields[rolename].includes(role) ? "bg-green-700" : "bg-emerald-300 hover:bg-emerald-500 transition-all duration-200"}`}
                 onClick={() => {
+                  console.log(selectedFields);
+                  console.log(rolename);
                   if (selectedFields[rolename].includes(role)) {
                     setSelectedFields((prev) => ({
                       ...prev,
@@ -188,6 +337,11 @@ const Survey = () => {
                     coreSubjects: [],
                     professionalRoles: [],
                     specializationSubjects: [],
+                    educationLevels: [],
+                    fieldsOfStudy: [],
+                    skills: [],
+                    interests: [],
+                    preferredTechnologies: [],
                   });
                 }}
               >
@@ -195,15 +349,21 @@ const Survey = () => {
               </button>
               <button
                 className={`bg-sky-600 font-extrabold text-lg px-4 py-2 text-black rounded-xl justify-self-end hover:bg-sky-800 transition-all duration-200 cursor-pointer`}
-                onClick={() => {
-                  if (currIndex < 2) {
+                onClick={async () => {
+                  console.log();
+                  if (currIndex < 7) {
                     setCurrIndex((prev) => prev + 1);
                   } else {
-                    console.log(selectedFields);
+                    const data = await submitSurvey(
+                      data.roleID,
+                      selectedFields,
+                      personalData
+                    );
+                    setSurveyGiven(true);
                   }
                 }}
               >
-                {currIndex === 2 ? "Submit" : "next"}
+                {currIndex === 7 ? "Submit" : "next"}
               </button>
             </div>
           </div>

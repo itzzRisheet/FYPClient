@@ -56,6 +56,22 @@ const RegisterCard = ({ id, ref }) => {
 
   const navigate = useNavigate();
 
+  const [age, setAge] = useState(0);
+  const [gender, setGender] = useState("male");
+
+  const handleAgeChange = (e) => {
+    setAge(parseInt(e.target.value));
+    formik.setValues({ ...formik.values, age: e.target.value });
+  };
+
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
+  };
+
+  useEffect(() => {
+    formik.setValues({ ...formik.values, gender: gender });
+  }, [gender]);
+
   const formik = useFormik({
     initialValues: {
       fname: "",
@@ -63,6 +79,8 @@ const RegisterCard = ({ id, ref }) => {
       email: "",
       role: role,
       password: "",
+      age: "",
+      gender: "",
     },
     validate: (values) => {
       const errors = {};
@@ -198,6 +216,79 @@ const RegisterCard = ({ id, ref }) => {
                   placeholder="Password"
                 />
                 <span className="input_border"></span>
+              </div>
+              <div>
+                <label
+                  htmlFor="age"
+                  className="block text-gray-400 font-semibold mb-2"
+                >
+                  Select Age:
+                </label>
+                <select
+                  {...formik.getFieldProps("age")}
+                  id="age"
+                  name="age"
+                  value={age}
+                  onChange={handleAgeChange}
+                  className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 input"
+                  
+                >
+                  {[...Array(101)].map((_, index) => (
+                    <option key={index} value={index} className="bg-black">
+                      {index}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mt-4">
+                <span className="block text-gray-400 font-semibold mb-2">
+                  Select Gender:
+                </span>
+                <div className="flex items-center">
+                  <input
+                    {...formik.getFieldProps("gender")}
+                    type="radio"
+                    id="male"
+                    name="gender"
+                    value="male"
+                    checked={gender === "male"}
+                    onChange={handleGenderChange}
+                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  />
+                  <label htmlFor="male" className="ml-2 text-gray-400">
+                    Male
+                  </label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input
+                    {...formik.getFieldProps("gender")}
+                    type="radio"
+                    id="female"
+                    name="gender"
+                    value="female"
+                    checked={gender === "female"}
+                    onChange={handleGenderChange}
+                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  />
+                  <label htmlFor="female" className="ml-2 text-gray-400">
+                    Female
+                  </label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input
+                    {...formik.getFieldProps("gender")}
+                    type="radio"
+                    id="other"
+                    name="gender"
+                    value="other"
+                    checked={gender === "other"}
+                    onChange={handleGenderChange}
+                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  />
+                  <label htmlFor="other" className="ml-2 text-gray-400">
+                    Other
+                  </label>
+                </div>
               </div>
             </div>
             <div className="mb-0.5 w-full flex  justify-center ">
