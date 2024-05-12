@@ -66,6 +66,7 @@ const StudentHome = () => {
     return () => clearTimeout(timeout);
   }, []); // Empty dependency array ensures this effect runs only once
 
+  // return <Survey />;
   if (!surveyGiven) return <Survey />;
 
   if (userLoggingIn) return <LoginRole />;
