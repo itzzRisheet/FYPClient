@@ -18,7 +18,7 @@ const RegisterCard = ({ id, ref }) => {
   const { setShowLoginPage, role, setLoginStatus } = uselocalStore();
   const { token, setToken, decodedData, userRole } = useUserData();
   const [msg, setMsg] = useState();
-  const BASEURL = "http://localhost:8080";
+  const BASEURL = "https://edurecx-backend-api-ugxdufb6ga-em.a.run.app";
 
   const [open, setOpen] = useState(false);
 
@@ -231,7 +231,6 @@ const RegisterCard = ({ id, ref }) => {
                   value={age}
                   onChange={handleAgeChange}
                   className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 input"
-                  
                 >
                   {[...Array(101)].map((_, index) => (
                     <option key={index} value={index} className="bg-black">

@@ -52,10 +52,10 @@ const Home = () => {
             <Hero />
           )}
         </div>
-        <div className="min-h-screen  snap-start bg-gray-600 w-screen"></div>
-        <div className="min-h-screen snap-start bg-gray-700 w-screen"></div>
-        <div className="min-h-screen snap-start bg-gray-800 w-screen"></div>
-        <div className="min-h-screen snap-start bg-gray-900 w-screen"></div>
+        <div className="min-h-screen  snap-start bg-gray-600 w-screen">about</div>
+        <div className="min-h-screen snap-start bg-gray-700 w-screen">Features</div>
+        <div className="min-h-screen snap-start bg-gray-800 w-screen">Members</div>
+        <div className="min-h-screen snap-start bg-gray-900 w-screen">Footer</div>
       </div>
     </div>
   );
